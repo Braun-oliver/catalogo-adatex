@@ -91,7 +91,7 @@
 
   /* Secciones en cuadros con imagen de fondo (2 columnas) */
   .sec-cuadros{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
-  .sec-cuadro{position:relative;aspect-ratio:1/1;border-radius:16px;overflow:hidden;
+  .sec-cuadro{position:relative;aspect-ratio:3/4;border-radius:16px;overflow:hidden;
               box-shadow:var(--sombra);background:var(--gris);padding:0;display:block}
   .sec-cuadro img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
   .sec-cuadro .ov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05) 45%,rgba(0,0,0,.5))}
@@ -99,6 +99,10 @@
                   color:#fff;font-weight:700;font-size:1rem;line-height:1.15;text-align:left;
                   text-shadow:0 1px 5px rgba(0,0,0,.65)}
   .sec-cuadro:active{transform:scale(.98)}
+  .sec-cuadro.sec-agotada img{filter:grayscale(1) brightness(.82)}
+  .sec-agot-tag{position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;
+    color:#fff;font-weight:800;letter-spacing:.1em;font-size:1.05rem;text-transform:uppercase;
+    background:rgba(0,0,0,.32);text-shadow:0 1px 6px rgba(0,0,0,.75)}
 
   /* ---------- CARRUSEL ---------- */
   .carrusel{position:relative;background:#f0f0f0;border-radius:12px;overflow:hidden;
@@ -163,11 +167,11 @@
   .footer .logo-f{font-weight:800;letter-spacing:.12em;font-size:.8rem}
 
   /* ---------- BOTÓN FLOTANTE CARRITO ---------- */
-  .fab{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:45;background:var(--teal);color:#fff;
-       border-radius:14px;padding:.7rem .9rem;font-weight:700;font-size:.8rem;text-align:center;
-       box-shadow:0 8px 22px rgba(79,154,148,.5);line-height:1.1}
-  .fab .cont{position:absolute;top:-8px;right:-8px;min-width:24px;height:24px;padding:0 5px;
-             background:#111;color:#fff;border-radius:999px;font-size:.8rem;display:flex;
+  .fab{position:fixed;right:16px;bottom:calc(96px + env(safe-area-inset-bottom));z-index:45;background:var(--teal);color:#fff;
+       border-radius:16px;padding:1.05rem 1.4rem;font-weight:800;font-size:1rem;text-align:center;
+       box-shadow:0 10px 26px rgba(79,154,148,.55);line-height:1.12}
+  .fab .cont{position:absolute;top:-10px;right:-10px;min-width:28px;height:28px;padding:0 6px;
+             background:#111;color:#fff;border-radius:999px;font-size:.9rem;display:flex;
              align-items:center;justify-content:center;border:2px solid var(--bg)}
   .fab .cont.oculto{display:none}
 
@@ -468,12 +472,50 @@ const AGOTADOS = {
   "medallon/diciembre-2024/6":true,"medallon/diciembre-2024/10":true,
   "medallon/abril-2023/3":true,"medallon/abril-2023/11":true,"medallon/abril-2023/13":true,"medallon/abril-2023/14":true,"medallon/abril-2023/18":true,"medallon/abril-2023/24":true,
   "medallon/febrero-2023/3":true,"medallon/febrero-2023/5":true,"medallon/febrero-2023/7":true,"medallon/febrero-2023/11":true,"medallon/febrero-2023/12":true,"medallon/febrero-2023/17":true,"medallon/febrero-2023/18":true,"medallon/febrero-2023/22":true,"medallon/febrero-2023/23":true,"medallon/febrero-2023/25":true,
+
+  // ---- ACTUALIZACIÓN: nuevos agotados ----
+  // MEDALLÓN
+  "medallon/metalica-completa/8":true,"medallon/metalica-completa/12":true,"medallon/metalica-completa/13":true,
+  "medallon/febrero-2026/3":true,
+  "medallon/diciembre-2024/6":true,"medallon/diciembre-2024/10":true,
+  "medallon/metalica-junio/1":true,"medallon/metalica-junio/8":true,"medallon/metalica-junio/10":true,"medallon/metalica-junio/11":true,"medallon/metalica-junio/18":true,"medallon/metalica-junio/20":true,
+  "medallon/octubre-2024/1":true,"medallon/octubre-2024/10":true,"medallon/octubre-2024/14":true,
+  "medallon/otono/2":true,
+  "medallon/julio-2024/2":true,"medallon/julio-2024/5":true,"medallon/julio-2024/13":true,"medallon/julio-2024/15":true,"medallon/julio-2024/19":true,"medallon/julio-2024/22":true,
+  "medallon/noviembre-2024/17":true,
+  "medallon/agosto/2":true,"medallon/agosto/9":true,"medallon/agosto/13":true,"medallon/agosto/17":true,
+  "medallon/febrero-2024/6":true,
+  "medallon/junio-2024/1":true,"medallon/junio-2024/5":true,"medallon/junio-2024/9":true,"medallon/junio-2024/10":true,"medallon/junio-2024/15":true,"medallon/junio-2024/17":true,"medallon/junio-2024/22":true,
+  "medallon/abril-2023/3":true,"medallon/abril-2023/11":true,"medallon/abril-2023/14":true,"medallon/abril-2023/15":true,"medallon/abril-2023/18":true,"medallon/abril-2023/24":true,
+  "medallon/febrero-2023/22":true,
+  // VARIOS
+  "varios/centenario-1/4":true,
+  "varios/centenario-2/2":true,"varios/centenario-2/7":true,"varios/centenario-2/10":true,
+  "varios/jael-2024/4":true,"varios/jael-2024/14":true,
+  "varios/ana-2023/3":true,"varios/ana-2023/4":true,"varios/ana-2023/16":true,
+  "varios/dan-2025/4":true,"varios/dan-2025/5":true,"varios/dan-2025/10":true,"varios/dan-2025/14":true,
+  "varios/dan-2023/4":true,
+  "varios/jael-2023/5":true,"varios/jael-2023/6":true,
+  "varios/arco/11":true,"varios/arco/14":true,
+  "varios/med-escudo/3":true,"varios/med-escudo/4":true,"varios/med-escudo/25":true,"varios/med-escudo/26":true,
+  // BORDADAS (números sueltos)
+  "bordadas/milhojas/5":true,"bordadas/milhojas/13":true,"bordadas/milhojas/36":true,"bordadas/milhojas/38":true,
+  "bordadas/bordada-m5/5":true,"bordadas/bordada-m5/8":true,"bordadas/bordada-m5/11":true,"bordadas/bordada-m5/12":true,"bordadas/bordada-m5/15":true,"bordadas/bordada-m5/20":true,
+};
+
+// SECCIONES COMPLETAS agotadas: el modelo entero se marca agotado (tarjeta gris
+// en la lista + todos sus colores agotados). Clave = "categoria/seccion".
+const SECCIONES_AGOTADAS = {
+  "bordadas/media-luna":true,
+  "bordadas/bordada-escudo":true,
+  "bordadas/bordada-arco":true,
 };
 
 /* ============================ DATOS ============================ */
 /* [nombre, número de colores] por categoría */
 const CATEGORIAS = [
   { slug:"medallon", nombre:"MEDALLÓN", secciones:[
+    ["SEPTIEMBRE 2026",30],
     ["METÁLICA COMPLETA",35],["FEBRERO 2026",25],["NOVIEMBRE 2025",23],["MARZO 2025",15],
     ["JULIO 2025",15],["DICIEMBRE 2024",21],["METÁLICA JUNIO",20],["OCTUBRE 2024",20],
     ["OTOÑO",30],["JULIO 2024",25],["NOVIEMBRE 2024",30],["PRIMAVERA",10],["AGOSTO",30],
@@ -556,9 +598,11 @@ function abrirCategoria(catSlug){
   document.getElementById("secciones-lista").innerHTML =
     c.secciones.map(([nombre])=>{
       const s=slug(nombre);
-      return `<button class="sec-cuadro" onclick="abrirSeccion('${c.slug}','${s}')">
-        <img src="${imgCover(c.slug,s)}" alt="${nombre}" onerror="fallback(this,'${nombre}','')">
+      const sAgot=!!SECCIONES_AGOTADAS[c.slug+"/"+s];
+      return `<button class="sec-cuadro ${sAgot?'sec-agotada':''}" onclick="abrirSeccion('${c.slug}','${s}')">
+        ${sAgot?'':`<img loading="lazy" decoding="async" src="${imgCover(c.slug,s)}" alt="${nombre}" onerror="fallback(this,'${nombre}','')">`}
         <span class="ov"></span><span class="nm">${nombre}</span>
+        ${sAgot?'<span class="sec-agot-tag">Agotado</span>':''}
       </button>`;
     }).join("");
   mostrarVista("categoria");
@@ -591,12 +635,12 @@ function abrirSeccion(catSlug, secSlug){
 
 function tarjetaColor(sec,num){
   const key=keyDe(sec.catSlug,sec.slug,num);
-  const agotado=!!AGOTADOS[key];
+  const agotado=!!AGOTADOS[key] || !!SECCIONES_AGOTADAS[sec.catSlug+"/"+sec.slug];
   const src=imgColor(sec.catSlug,sec.slug,num,"a");
   const cant=cantTarjeta[key]||1;
   return `<article class="tarjeta ${agotado?'agotado':''}">
     <div class="tar-img" ${agotado?'':`onclick="abrirZoom('${sec.catSlug}','${sec.slug}',${num})"`}>
-      <img src="${src}" alt="#${num}" onerror="fallback(this,'#${num}','${sec.nombre}')">
+      ${agotado?'':`<img loading="lazy" decoding="async" src="${src}" alt="#${num}" onerror="fallback(this,'#${num}','${sec.nombre}')">`}
       <span class="num-label">#${num}</span>
       ${agotado?'':'<span class="dos-fotos">● ●</span>'}
     </div>
@@ -708,7 +752,7 @@ function renderCarrito(){
   }else{
     cont.innerHTML=items.map(([key,it])=>`
       <div class="item">
-        <img src="${imgColor(it.catSlug,it.secSlug,it.num,'a')}" alt="#${it.num}"
+        <img loading="lazy" decoding="async" src="${imgColor(it.catSlug,it.secSlug,it.num,'a')}" alt="#${it.num}"
              onerror="fallback(this,'#${it.num}','')">
         <div class="ti"><b>${it.secNombre} #${it.num}</b><small>${it.catNombre}</small></div>
         <div class="stepper">
