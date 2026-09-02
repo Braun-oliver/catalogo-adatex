@@ -100,6 +100,8 @@
                   text-shadow:0 1px 5px rgba(0,0,0,.65)}
   .sec-cuadro:active{transform:scale(.98)}
   .sec-cuadro.sec-agotada img{filter:grayscale(1) brightness(.82)}
+  .sec-cuadro.sec-agotada{cursor:default}
+  .sec-cuadro.sec-agotada:active{transform:none}
   .sec-agot-tag{position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;
     color:#fff;font-weight:800;letter-spacing:.1em;font-size:1.05rem;text-transform:uppercase;
     background:rgba(0,0,0,.32);text-shadow:0 1px 6px rgba(0,0,0,.75)}
@@ -599,7 +601,7 @@ function abrirCategoria(catSlug){
     c.secciones.map(([nombre])=>{
       const s=slug(nombre);
       const sAgot=!!SECCIONES_AGOTADAS[c.slug+"/"+s];
-      return `<button class="sec-cuadro ${sAgot?'sec-agotada':''}" onclick="abrirSeccion('${c.slug}','${s}')">
+      return `<button class="sec-cuadro ${sAgot?'sec-agotada':''}" ${sAgot?'':`onclick="abrirSeccion('${c.slug}','${s}')"`}>
         ${sAgot?'':`<img loading="lazy" decoding="async" src="${imgCover(c.slug,s)}" alt="${nombre}" onerror="fallback(this,'${nombre}','')">`}
         <span class="ov"></span><span class="nm">${nombre}</span>
         ${sAgot?'<span class="sec-agot-tag">Agotado</span>':''}
