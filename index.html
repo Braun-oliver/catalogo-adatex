@@ -55,8 +55,8 @@
   .header{position:sticky;top:0;z-index:40;background:var(--panel);
           border-bottom:1px solid var(--borde);display:flex;align-items:center;
           justify-content:space-between;padding:.4rem 1rem;height:56px}
-  .logo{font-weight:800;letter-spacing:.18em;font-size:1.05rem}
-  .logo small{display:block;font-weight:500;font-size:.55rem;letter-spacing:.3em;color:var(--suave)}
+  .logo{padding:0;display:flex;align-items:center;background:none;border:none}
+  .logo img{height:44px;width:auto;display:block}
   .hamb{font-size:1.5rem;line-height:1;padding:.3rem .5rem;border:1px solid var(--borde);border-radius:8px}
 
   /* Menú desplegable (Inicio/Ubicación/Carrito/Síguenos) */
@@ -166,7 +166,7 @@
   .footer{background:var(--gris);color:#111;margin-top:1rem;padding:1.4rem 1rem;
           display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:.6rem;text-align:center}
   .footer button{color:#111;font-size:.92rem;display:block;margin:.35rem 0}
-  .footer .logo-f{font-weight:800;letter-spacing:.12em;font-size:.8rem}
+  .footer .logo-f img{height:68px;width:auto;display:block;margin:0 auto}
 
   /* ---------- BOTÓN FLOTANTE CARRITO ---------- */
   .fab{position:fixed;right:16px;bottom:calc(96px + env(safe-area-inset-bottom));z-index:45;background:var(--teal);color:#fff;
@@ -261,7 +261,7 @@
 
   <!-- HEADER -->
   <div class="header">
-    <button class="logo" onclick="irInicio()">ADATEX<small>EL MANTO</small></button>
+    <button class="logo" onclick="irInicio()"><img src="imagenes/logo.png" alt="El Manto Adatex"></button>
     <button class="hamb" onclick="toggleMenu()" aria-label="Menú">☰</button>
   </div>
 
@@ -344,7 +344,7 @@
       <button onclick="window.open('https://wa.me/524441768388','_blank')">Whatsapp</button>
       <button onclick="mostrarVista('ubicacion')">Horarios</button>
     </div>
-    <div class="logo-f">EL MANTO<br>ADATEX</div>
+    <div class="logo-f"><img src="imagenes/logo.png" alt="El Manto Adatex"></div>
     <div>
       <button onclick="window.open('https://facebook.com/','_blank')">Facebook</button>
       <button onclick="mostrarVista('ubicacion')">Ubicación</button>
