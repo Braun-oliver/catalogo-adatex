@@ -76,7 +76,11 @@
 
   .tit-pagina{display:flex;align-items:center;gap:.6rem;margin:0 -1rem 1rem;padding:.55rem 1rem;
               position:sticky;top:56px;z-index:35;background:var(--bg);border-bottom:1px solid var(--borde)}
-  .tit-pagina .atras{font-size:1.5rem;color:var(--suave);padding:.2rem .4rem;border-radius:8px}
+  .tit-pagina .atras{width:46px;height:46px;padding:0;border-radius:10px;font-size:0;flex:0 0 auto;
+                     display:inline-flex;align-items:center;justify-content:center;color:var(--texto)}
+  .tit-pagina .atras::before{content:"";width:32px;height:32px;background:currentColor;
+     -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 12H5M12 19l-7-7 7-7'/%3E%3C/svg%3E") center/contain no-repeat;
+     mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 12H5M12 19l-7-7 7-7'/%3E%3C/svg%3E") center/contain no-repeat}
   .tit-pagina h1{font-size:1.6rem;font-weight:700;letter-spacing:.02em}
   .centro-tit{text-align:center;font-size:1.7rem;font-weight:700;margin:1.5rem 0 1.6rem;letter-spacing:.03em}
 
@@ -416,15 +420,15 @@
   <div class="pedido">
     <div class="p-head"><h2>Mi pedido</h2><button class="cerrar" onclick="cerrarCarrito()">✕</button></div>
     <div class="p-body">
-      <div class="envio-info">Menos de 12 pz es envío gratis por medio de correos de México, de 10 a 15 días hábiles.</div>
+      <div class="envio-info">Menos de 12 pz es envío gratis por medio de correos de México.<br>Más de 12 pz por paquetería express.</div>
       <div class="p-sub">Datos de quien recibe:</div>
       <div class="form-datos">
         <div class="campo"><label>Nombre de quien recibe</label><input id="f-nombre" type="text"></div>
         <div class="campo"><label>Calle y número</label><input id="f-calle" type="text"></div>
         <div class="campo"><label>Colonia</label><input id="f-colonia" type="text"></div>
-        <div class="campo"><label>Estado</label><input id="f-estado" type="text"></div>
+        <div class="campo"><label>Estado y municipio</label><input id="f-estado" type="text"></div>
         <div class="campo"><label>Código postal</label><input id="f-cp" type="text" inputmode="numeric"></div>
-        <div class="campo"><label>Teléfono</label><input id="f-tel" type="text" inputmode="tel"></div>
+        <div class="campo"><label>Teléfono</label><input id="f-tel" type="text" inputmode="numeric" maxlength="15"></div>
         <div class="campo"><label>Referencia</label><input id="f-ref" type="text"></div>
       </div>
       <p class="aviso-form" id="aviso-form">Completa todos los datos para poder enviar tu pedido.</p>
@@ -894,12 +898,20 @@ function leerDatos(){
 }
 function validar(d){
   const campos={ "f-nombre":d.nombre,"f-calle":d.calle,"f-colonia":d.colonia,"f-estado":d.estado,"f-cp":d.cp,"f-tel":d.tel,"f-ref":d.ref };
-  let ok=true;
+  let ok=true, faltan=false;
   for(const id in campos){
     const el=document.getElementById(id);
-    if(!campos[id]){ el.classList.add("error"); ok=false; } else el.classList.remove("error");
+    if(!campos[id]){ el.classList.add("error"); ok=false; faltan=true; } else el.classList.remove("error");
   }
-  document.getElementById("aviso-form").classList.toggle("ver",!ok);
+  // Teléfono: exactamente 10 dígitos
+  const tel=document.getElementById("f-tel");
+  const dig=(d.tel||"").replace(/\D/g,"");
+  let telMal=false;
+  if(d.tel && dig.length!==10){ tel.classList.add("error"); ok=false; telMal=true; }
+  const aviso=document.getElementById("aviso-form");
+  aviso.textContent = faltan ? "Completa todos los datos para poder enviar tu pedido."
+                    : (telMal ? "El teléfono debe tener 10 dígitos." : "");
+  aviso.classList.toggle("ver",!ok);
   return ok;
 }
 function intentarEnviar(){
