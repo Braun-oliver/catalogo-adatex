@@ -91,6 +91,9 @@
             font-size:1.9rem;font-weight:700;text-align:center;letter-spacing:.04em;
             box-shadow:var(--sombra)}
   .botonote:active{transform:scale(.99)}
+  .boton-op{align-self:flex-start;background:var(--panel);border:1px solid var(--borde);color:var(--texto);
+            border-radius:12px;padding:.7rem 1.15rem;font-size:1rem;font-weight:700;box-shadow:var(--sombra);margin-top:.1rem}
+  .boton-op:active{transform:scale(.98)}
   .lista-secciones .botonote{font-size:1.25rem;padding:1.2rem 1rem;border-radius:16px}
 
   /* Secciones en cuadros con imagen de fondo (2 columnas) */
@@ -169,6 +172,11 @@
        border-radius:14px;padding:1rem;font-size:1.15rem;font-weight:700;box-shadow:var(--sombra);color:var(--texto)}
   .red .ico{width:48px;height:48px;border-radius:10px;background:var(--gris2);flex-shrink:0}
   .frase{margin-top:1.4rem;color:var(--suave)}
+
+  /* ---------- OPINIONES ---------- */
+  .op-intro{color:var(--suave);margin:.2rem 0 .8rem}
+  .op-form{border-radius:12px;overflow:hidden;background:#fff;box-shadow:var(--sombra)}
+  .op-form iframe{display:block;width:100%;border:0}
 
   /* ---------- LÁMPARA CONMEMORATIVA ---------- */
   .lamp-video-wrap{position:relative;border-radius:14px;overflow:hidden;box-shadow:var(--sombra);background:#000;margin-top:.4rem}
@@ -306,6 +314,7 @@
     <button onclick="mostrarVista('ubicacion')">UBICACIÓN</button>
     <button onclick="abrirCarrito()">CARRITO</button>
     <button onclick="mostrarVista('siguenos')">SÍGUENOS</button>
+    <button onclick="mostrarVista('opiniones')">OPINIONES</button>
     <button class="volver" onclick="toggleMenu()">VOLVER ✕</button>
   </nav>
 
@@ -366,9 +375,8 @@
         <h1>SÍGUENOS</h1>
       </div>
       <div class="redes">
-        <a class="red" target="_blank" rel="noopener" href="https://facebook.com/"><span class="ico"></span>FACEBOOK</a>
-        <a class="red" target="_blank" rel="noopener" href="https://instagram.com/"><span class="ico"></span>INSTAGRAM</a>
-        <a class="red" target="_blank" rel="noopener" href="https://tiktok.com/"><span class="ico"></span>TIKTOK</a>
+        <a class="red" target="_blank" rel="noopener" href="https://www.facebook.com/profile.php?id=61568575825391"><span class="ico"></span>FACEBOOK</a>
+        <a class="red" target="_blank" rel="noopener" href="https://www.tiktok.com/@el.manto.adatex"><span class="ico"></span>TIKTOK</a>
       </div>
       <p class="frase">¡Tenemos dinámicas que te interesarán!</p>
     </section>
@@ -397,6 +405,18 @@
             <button class="btn-agregar" onclick="agregarLampara()">AGREGAR AL CARRITO</button>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- OPINIONES -->
+    <section class="vista" id="v-opiniones">
+      <div class="tit-pagina">
+        <button class="atras" onclick="irInicio()">←</button>
+        <h1>Opiniones</h1>
+      </div>
+      <p class="op-intro">¿Qué te pareció? Califícanos y déjanos tu opinión o duda. 💜</p>
+      <div class="op-form">
+        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdssaqQaWeEArdw2eqMHytCmpUD2T27La_qLx9bNwr0QXsz5w/viewform?embedded=true" width="100%" height="720" frameborder="0" marginheight="0" marginwidth="0" loading="lazy">Cargando…</iframe>
       </div>
     </section>
   </main>
@@ -441,14 +461,14 @@
   <div class="pedido">
     <div class="p-head"><h2>Mi pedido</h2><button class="cerrar" onclick="cerrarCarrito()">✕</button></div>
     <div class="p-body">
-      <div class="envio-info">Menos de 12 pz es envío gratis por medio de correos de México.<br>Más de 12 pz por paquetería express.</div>
+      <div class="envio-info">Hasta 11 pz: envío gratis por correos de México.<br>De 12 pz en adelante: paquetería express.</div>
       <div class="p-sub">Datos de quien recibe:</div>
       <div class="form-datos">
         <div class="campo"><label>Nombre de quien recibe</label><input id="f-nombre" type="text"></div>
         <div class="campo"><label>Calle y número</label><input id="f-calle" type="text"></div>
         <div class="campo"><label>Colonia</label><input id="f-colonia" type="text"></div>
         <div class="campo"><label>Estado y municipio</label><input id="f-estado" type="text"></div>
-        <div class="campo"><label>Código postal</label><input id="f-cp" type="text" inputmode="numeric"></div>
+        <div class="campo"><label>Código postal</label><input id="f-cp" type="text" inputmode="numeric" maxlength="5"></div>
         <div class="campo"><label>Teléfono</label><input id="f-tel" type="text" inputmode="numeric" maxlength="15"></div>
         <div class="campo"><label>Referencia</label><input id="f-ref" type="text"></div>
       </div>
@@ -546,7 +566,7 @@ const AGOTADOS = {
   "medallon/agosto/2":true,"medallon/agosto/9":true,"medallon/agosto/13":true,"medallon/agosto/17":true,
   "medallon/febrero-2024/6":true,
   "medallon/junio-2024/1":true,"medallon/junio-2024/5":true,"medallon/junio-2024/9":true,"medallon/junio-2024/10":true,"medallon/junio-2024/15":true,"medallon/junio-2024/17":true,"medallon/junio-2024/22":true,
-  "medallon/abril-2023/3":true,"medallon/abril-2023/11":true,"medallon/abril-2023/14":true,"medallon/abril-2023/15":true,"medallon/abril-2023/18":true,"medallon/abril-2023/24":true,
+  "medallon/abril-2023/3":true,"medallon/abril-2023/11":true,"medallon/abril-2023/14":true,"medallon/abril-2023/18":true,"medallon/abril-2023/24":true,
   "medallon/febrero-2023/22":true,
   // VARIOS
   "varios/centenario-1/4":true,
@@ -665,7 +685,8 @@ function cerrarMenu(){ document.getElementById("menu").classList.remove("abierto
 function renderInicio(){
   document.getElementById("cats-inicio").innerHTML =
     CATEGORIAS.map(c=>`<button class="botonote" onclick="abrirCategoria('${c.slug}')">${c.nombre}</button>`).join("")
-    + `<button class="botonote" onclick="abrirLampara()">LÁMPARA CONMEMORATIVA</button>`;
+    + `<button class="botonote" onclick="abrirLampara()">LÁMPARA CONMEMORATIVA</button>`
+    + `<button class="boton-op" onclick="mostrarVista('opiniones')">Dudas y opiniones</button>`;
 }
 
 /* ============================ LÁMPARA CONMEMORATIVA ============================ */
@@ -870,6 +891,17 @@ function cerrarCarrito(){ document.getElementById("cart-back").classList.remove(
 function renderCarrito(){
   const cont=document.getElementById("cart-items");
   const items=Object.entries(carrito);
+  // Ordenar por el orden del catálogo (categoría, sección, número) para que
+  // al quitar y volver a agregar, cada producto regrese a su lugar por modelo.
+  const orden={};
+  CATEGORIAS.forEach((c,ci)=>c.secciones.forEach(([nom],si)=>{ orden[c.slug+"/"+slug(nom)]=ci*1000+si; }));
+  items.sort((A,B)=>{
+    const a=A[1], b=B[1];
+    const oa=(orden[a.catSlug+"/"+a.secSlug] ?? 99999);
+    const ob=(orden[b.catSlug+"/"+b.secSlug] ?? 99999);
+    if(oa!==ob) return oa-ob;
+    return (parseInt(a.num)||0)-(parseInt(b.num)||0);
+  });
   if(items.length===0){
     cont.innerHTML='<div class="vacio">Tu carrito está vacío.<br>Agrega productos del catálogo.</div>';
   }else{
@@ -899,12 +931,12 @@ function renderCarrito(){
 }
 
 /* Envío: correos (12 o menos) o paquetería express (más de 12, o si el cliente lo elige) */
-function envioEsExpress(){ return totalPiezas()>12 || envioExpress; }
+function envioEsExpress(){ return totalPiezas()>=12 || envioExpress; }
 function renderEnvioAviso(){
   const cont=document.getElementById("envio-aviso"); if(!cont) return;
   const t=totalPiezas();
   if(t===0){ cont.innerHTML=""; return; }
-  if(t>12){
+  if(t>=12){
     cont.innerHTML=`<div class="env-aviso express">📦 Se enviará por paquetería express</div>`;
   }else if(envioExpress){
     cont.innerHTML=`<div class="env-aviso express">📦 Se enviará por paquetería express (+$150)</div>
@@ -987,14 +1019,19 @@ function validar(d){
     const el=document.getElementById(id);
     if(!campos[id]){ el.classList.add("error"); ok=false; faltan=true; } else el.classList.remove("error");
   }
-  // Teléfono: exactamente 10 dígitos
+  // Teléfono: 10 dígitos | Código postal: 5 dígitos
   const tel=document.getElementById("f-tel");
   const dig=(d.tel||"").replace(/\D/g,"");
   let telMal=false;
   if(d.tel && dig.length!==10){ tel.classList.add("error"); ok=false; telMal=true; }
+  const cp=document.getElementById("f-cp");
+  const cpDig=(d.cp||"").replace(/\D/g,"");
+  let cpMal=false;
+  if(d.cp && cpDig.length!==5){ cp.classList.add("error"); ok=false; cpMal=true; }
   const aviso=document.getElementById("aviso-form");
   aviso.textContent = faltan ? "Completa todos los datos para poder enviar tu pedido."
-                    : (telMal ? "El teléfono debe tener 10 dígitos." : "");
+                    : (cpMal ? "El código postal debe tener 5 dígitos."
+                    : (telMal ? "El teléfono debe tener 10 dígitos." : ""));
   aviso.classList.toggle("ver",!ok);
   return ok;
 }
@@ -1018,16 +1055,18 @@ function construirMensaje(d){
   m+=`Código postal: ${d.cp}\n`;
   m+=`Teléfono: ${d.tel}\n`;
   m+=`Referencia: ${d.ref}\n`;
-  // Agrupar por sección
+  // Agrupar por sección, con total por modelo
   const grupos={};
   Object.values(carrito).forEach(it=>{ (grupos[it.secNombre] ||= []).push(it); });
   for(const sec in grupos){
     m+=`\n${sec}\n`;
-    grupos[sec].sort((a,b)=>a.num-b.num).forEach(it=>{ m+= it.num ? `#${it.num}-${it.qty} piezas\n` : `${it.qty} piezas\n`; });
+    let subtotal=0;
+    grupos[sec].sort((a,b)=>a.num-b.num).forEach(it=>{ subtotal+=it.qty; m+= it.num ? `#${it.num}-${it.qty} piezas\n` : `${it.qty} piezas\n`; });
+    m+=`Total: ${subtotal} ${subtotal===1?'pieza':'piezas'}\n`;
   }
   m+=`\nPiezas totales: ${totalPiezas()} piezas\n`;
   m+= envioEsExpress()
-      ? `Envío: Paquetería express${(totalPiezas()<=12 && envioExpress)?" (+$150)":""}`
+      ? `Envío: Paquetería express${(totalPiezas()<12 && envioExpress)?" (+$150)":""}`
       : `Envío: Correos de México (gratis)`;
   return m;
 }
