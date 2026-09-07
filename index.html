@@ -81,7 +81,7 @@
   .tit-pagina .atras::before{content:"";width:32px;height:32px;background:currentColor;
      -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 12H5M12 19l-7-7 7-7'/%3E%3C/svg%3E") center/contain no-repeat;
      mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 12H5M12 19l-7-7 7-7'/%3E%3C/svg%3E") center/contain no-repeat}
-  .tit-pagina h1{font-size:1.6rem;font-weight:700;letter-spacing:.02em}
+  .tit-pagina h1{flex:1;text-align:center;padding-right:46px;margin:0;font-size:1.6rem;font-weight:700;letter-spacing:.02em}
   .centro-tit{text-align:center;font-size:1.7rem;font-weight:700;margin:1.5rem 0 1.6rem;letter-spacing:.03em}
 
   /* Botones grandes de categoría / lista de secciones */
@@ -103,6 +103,10 @@
                   color:#fff;font-weight:700;font-size:1rem;line-height:1.15;text-align:left;
                   text-shadow:0 1px 5px rgba(0,0,0,.65)}
   .sec-cuadro:active{transform:scale(.98)}
+  .nuevo-badge{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:4;
+    background:linear-gradient(180deg,#d94b3b,#a81f12);color:#fff;font-weight:800;font-size:.68rem;
+    letter-spacing:.05em;text-transform:uppercase;padding:.34rem .7rem;border-radius:6px;white-space:nowrap;
+    box-shadow:0 3px 9px rgba(0,0,0,.4)}
   .sec-cuadro.sec-agotada img{filter:grayscale(1) brightness(.82)}
   .sec-cuadro.sec-agotada{cursor:default}
   .sec-cuadro.sec-agotada:active{transform:none}
@@ -238,8 +242,25 @@
   .item .ti b{font-size:.98rem}
   .item .ti small{display:block;color:var(--suave);font-size:.74rem}
   .item .stepper button{background:#fff}
+  .item-del{flex-shrink:0;background:none;border:none;padding:.35rem;line-height:0;color:#555}
+  .item-del svg{width:22px;height:22px;display:block}
+  .item-del:active{color:#c0392b;transform:scale(.9)}
+  /* Aviso de envío */
+  .envio-aviso{margin:.2rem 0 .4rem}
+  .env-aviso{border-radius:10px;padding:.7rem .8rem;font-weight:700;font-size:.95rem;text-align:center}
+  .env-aviso.correos{background:#eaf3ff;color:#1b4b8a;border:1px solid #bcd8f5}
+  .env-aviso.express{background:#eafaf0;color:#1c6b3f;border:1px solid #bfe6cf}
+  .env-btn{display:block;width:100%;margin-top:.5rem;background:var(--teal);color:#fff;border-radius:10px;
+           padding:.65rem;font-size:.9rem;font-weight:700}
+  .env-btn:active{filter:brightness(.95)}
+  .env-btn.quitar{background:#efeef1;color:var(--texto);border:1px solid var(--borde)}
+  .nota-horario{font-size:.82rem;color:var(--suave);text-align:center;background:#faf7ec;
+                border:1px solid #ece2c4;border-radius:10px;padding:.55rem .7rem;margin:.2rem 0 .6rem}
   .vacio{text-align:center;color:var(--suave);padding:1.6rem 0}
-  .total{font-weight:700;font-size:1.05rem;margin:.9rem 0 1rem}
+  .total{margin:.9rem 0 1rem}
+  .total .tot-modelo{display:flex;justify-content:space-between;gap:.6rem;font-size:.92rem;color:var(--suave);padding:.15rem 0}
+  .total .tot-modelo span:last-child{font-weight:700;color:var(--texto);white-space:nowrap}
+  .total .tot-grande{font-weight:800;font-size:1.1rem;margin-top:.5rem;border-top:1.5px solid var(--borde);padding-top:.5rem}
   .btn-enviar{display:block;width:100%;background:var(--verde);color:#fff;font-weight:800;
               font-size:1.05rem;padding:.85rem;border-radius:10px;letter-spacing:.03em}
   .btn-enviar:disabled{background:#bcbcbc;cursor:not-allowed}
@@ -431,10 +452,12 @@
         <div class="campo"><label>Teléfono</label><input id="f-tel" type="text" inputmode="numeric" maxlength="15"></div>
         <div class="campo"><label>Referencia</label><input id="f-ref" type="text"></div>
       </div>
+      <p class="nota-horario">🕙 Si envías tu pedido antes de las 10 am se enviará hoy; después de las 10 am, mañana.</p>
       <p class="aviso-form" id="aviso-form">Completa todos los datos para poder enviar tu pedido.</p>
 
       <div class="items" id="cart-items"></div>
       <div class="total" id="cart-total">Piezas totales: 0 pz</div>
+      <div class="envio-aviso" id="envio-aviso"></div>
 
       <!-- Confirmación -->
       <div class="confirm" id="confirm">
@@ -546,6 +569,19 @@ const SECCIONES_AGOTADAS = {
   "bordadas/media-luna":true,
   "bordadas/bordada-escudo":true,
   "bordadas/bordada-arco":true,
+  "varios/economica-6":true,
+  "varios/economica-14":true,
+};
+
+// Secciones con UNA sola foto por color (sin segunda foto) y UNA sola imagen de carrusel.
+const UNA_FOTO = {
+  "varios/economica-6":true,
+  "varios/economica-14":true,
+};
+
+// Secciones marcadas como "NUEVO MODELO" (listón rojo en la tarjeta).
+const SECCIONES_NUEVO = {
+  "medallon/septiembre-2026":true,
 };
 
 /* ============================ DATOS ============================ */
@@ -559,10 +595,10 @@ const CATEGORIAS = [
     ["FEBRERO 2024",15],["JUNIO 2024",25],["ABRIL 2023",24],["FEBRERO 2023",27],
   ]},
   { slug:"varios", nombre:"VARIOS", secciones:[
-    ["ZARETH",21],["ELISA 2026",27],["FANNY 2025",30],["JAZMÍN 2026",28],["ELEFANTE",25],
+    ["BELÉN",25],["ZARETH",21],["ELISA 2026",27],["FANNY 2025",30],["JAZMÍN 2026",28],["ELEFANTE",25],
     ["CENTENARIO 1",10],["CENTENARIO 2",10],["JAEL 2024",15],["JAEL 2023",15],["ANA 2024",20],
     ["ANA 2023",18],["DAN 2025",14],["DAN 2023",15],["ANGEL",24],["ARPA",10],["ARCO",14],
-    ["MED. ESCUDO",28],["ECONÓMICA 14",14],["ECONÓMICA 6",6],["BELÉN",25],
+    ["MED. ESCUDO",28],["ECONÓMICA 14",14],["ECONÓMICA 6",6],
   ]},
   { slug:"bordadas", nombre:"BORDADAS", secciones:[
     ["MILHOJAS",38],["BORDADA ARCO",20],["BORDADA ESCUDO",15],["MEDIA LUNA",20],["BORDADA (M5)",20],
@@ -602,6 +638,8 @@ function fallback(img, texto, sub){ img.onerror=null; img.src=placeholder(texto,
 
 /* ============================ ESTADO ============================ */
 let carrito = {};            // key -> {catSlug,catNombre,secSlug,secNombre,num,qty}
+let envioExpress = false;    // el cliente eligió express (+$150) cuando son 12 o menos piezas
+let scrollCat = 0;           // recuerda la posición en la lista de modelos al entrar a uno
 let cantTarjeta = {};        // key -> cantidad elegida en la tarjeta (default 1)
 let seccionActual = null;
 let carruselTimer = null;
@@ -611,13 +649,13 @@ function keyDe(catSlug, secSlug, num){ return `${catSlug}/${secSlug}/${num}`; }
 function totalPiezas(){ return Object.values(carrito).reduce((a,b)=>a+b.qty,0); }
 
 /* ============================ NAVEGACIÓN ============================ */
-function mostrarVista(id){
+function mostrarVista(id, keepScroll){
   document.querySelectorAll(".vista").forEach(v=>v.classList.remove("activa"));
   document.getElementById("v-"+id).classList.add("activa");
   detenerCarrusel();
   const lv=document.getElementById("lamp-video"); if(lv && id!=="lampara") lv.pause();
   cerrarMenu();
-  window.scrollTo(0,0);
+  if(!keepScroll) window.scrollTo(0,0);
 }
 function irInicio(){ mostrarVista("inicio"); }
 function toggleMenu(){ document.getElementById("menu").classList.toggle("abierto"); }
@@ -667,10 +705,12 @@ function abrirCategoria(catSlug){
     c.secciones.map(([nombre])=>{
       const s=slug(nombre);
       const sAgot=!!SECCIONES_AGOTADAS[c.slug+"/"+s];
+      const sNuevo=!!SECCIONES_NUEVO[c.slug+"/"+s];
       return `<button class="sec-cuadro ${sAgot?'sec-agotada':''}" ${sAgot?'':`onclick="abrirSeccion('${c.slug}','${s}')"`}>
         ${sAgot?'':`<img loading="lazy" decoding="async" src="${imgCover(c.slug,s)}" alt="${nombre}" onerror="fallback(this,'${nombre}','')">`}
         <span class="ov"></span><span class="nm">${nombre}</span>
         ${sAgot?'<span class="sec-agot-tag">Agotado</span>':''}
+        ${(sNuevo&&!sAgot)?'<span class="nuevo-badge">✨ Modelo nuevo</span>':''}
       </button>`;
     }).join("");
   mostrarVista("categoria");
@@ -678,18 +718,20 @@ function abrirCategoria(catSlug){
 
 /* SECCIÓN: carrusel + grid de colores */
 function abrirSeccion(catSlug, secSlug){
+  scrollCat=window.scrollY;   // recuerda dónde iba en la lista de modelos
   const sec=seccionDe(catSlug, secSlug);
   seccionActual=sec;
   document.getElementById("sec-titulo").textContent=sec.nombre;
-  document.getElementById("sec-atras").onclick=()=>abrirCategoria(catSlug);
+  document.getElementById("sec-atras").onclick=()=>{ mostrarVista("categoria",true); requestAnimationFrame(()=>window.scrollTo(0,scrollCat)); };
 
-  // Carrusel (3 imágenes)
+  // Carrusel: hasta 3 imágenes (las que falten se ocultan solas)
+  const idxs=[1,2,3];
   const car=document.getElementById("carrusel");
-  car.innerHTML=[1,2,3].map((i,idx)=>
-    `<div class="slide ${idx===0?'on':''}"><img src="${imgCarrusel(catSlug,secSlug,i)}"
-       alt="promo ${i}" onerror="fallback(this,'PROMO ${i}','foto puesta / promo')"></div>`).join("");
-  document.getElementById("carrusel-dots").innerHTML=[0,1,2].map(i=>
-    `<span class="${i===0?'on':''}"></span>`).join("");
+  car.innerHTML=idxs.map((i,idx)=>
+    `<div class="slide ${idx===0?'on':''}" data-ci="${idx}"><img src="${imgCarrusel(catSlug,secSlug,i)}"
+       alt="promo ${i}" onerror="carruselFalla(${idx})"></div>`).join("");
+  document.getElementById("carrusel-dots").innerHTML=idxs.map((i,idx)=>
+    `<span class="${idx===0?'on':''}" data-ci="${idx}"></span>`).join("");
 
   // Grid de colores
   document.getElementById("grid-colores").innerHTML="";
@@ -704,13 +746,14 @@ function abrirSeccion(catSlug, secSlug){
 function tarjetaColor(sec,num){
   const key=keyDe(sec.catSlug,sec.slug,num);
   const agotado=!!AGOTADOS[key] || !!SECCIONES_AGOTADAS[sec.catSlug+"/"+sec.slug];
+  const unaFoto=!!UNA_FOTO[sec.catSlug+"/"+sec.slug];
   const src=imgColor(sec.catSlug,sec.slug,num,"a");
   const cant=cantTarjeta[key]||1;
   return `<article class="tarjeta ${agotado?'agotado':''}">
     <div class="tar-img" ${agotado?'':`onclick="abrirZoom('${sec.catSlug}','${sec.slug}',${num})"`}>
       ${agotado?'':`<img loading="lazy" decoding="async" src="${src}" alt="#${num}" onerror="fallback(this,'#${num}','${sec.nombre}')">`}
       <span class="num-label">#${num}</span>
-      ${agotado?'':'<span class="dos-fotos">● ●</span>'}
+      ${(agotado||unaFoto)?'':'<span class="dos-fotos">● ●</span>'}
     </div>
     <div class="tar-body">
       <small class="sec-n">${sec.nombre}</small>
@@ -729,16 +772,28 @@ function tarjetaColor(sec,num){
 }
 
 /* Carrusel automático cada 2s */
+function carruselFalla(idx){
+  const s=document.querySelector(`#carrusel .slide[data-ci="${idx}"]`);
+  const d=document.querySelector(`#carrusel-dots span[data-ci="${idx}"]`);
+  if(s) s.remove(); if(d) d.remove();
+  const slides=document.querySelectorAll("#carrusel .slide");
+  if(slides.length && !document.querySelector("#carrusel .slide.on")){
+    slides[0].classList.add("on");
+    const d0=document.querySelector("#carrusel-dots span"); if(d0) d0.classList.add("on");
+  }
+  iniciarCarrusel();
+}
 function iniciarCarrusel(){
   detenerCarrusel();
   let i=0;
   const slides=document.querySelectorAll("#carrusel .slide");
   const dots=document.querySelectorAll("#carrusel-dots span");
+  document.getElementById("carrusel-dots").style.display = slides.length<2 ? "none" : "flex";
   if(slides.length<2) return;
   carruselTimer=setInterval(()=>{
-    slides[i].classList.remove("on"); dots[i].classList.remove("on");
+    slides[i].classList.remove("on"); if(dots[i])dots[i].classList.remove("on");
     i=(i+1)%slides.length;
-    slides[i].classList.add("on"); dots[i].classList.add("on");
+    slides[i].classList.add("on"); if(dots[i])dots[i].classList.add("on");
   },2000);
 }
 function detenerCarrusel(){ if(carruselTimer){ clearInterval(carruselTimer); carruselTimer=null; } }
@@ -829,33 +884,62 @@ function renderCarrito(){
                  onchange="fijarCarrito('${key}',this.value)" onfocus="this.select()">
           <button onclick="cambiarCarrito('${key}',1)">+</button>
         </div>
+        <button class="item-del" onclick="eliminarItem('${key}')" title="Eliminar" aria-label="Eliminar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
       </div>`).join("");
   }
-  document.getElementById("cart-total").textContent=`Piezas totales: ${totalPiezas()} pz`;
+  // Totales: por cada modelo + total general del pedido
+  const porModelo={};
+  Object.values(carrito).forEach(it=>{ porModelo[it.secNombre]=(porModelo[it.secNombre]||0)+it.qty; });
+  let res="";
+  Object.keys(porModelo).forEach(nom=>{ res+=`<div class="tot-modelo"><span>${nom}</span><span>${porModelo[nom]} pz</span></div>`; });
+  res+=`<div class="tot-grande">Piezas totales: ${totalPiezas()} pz</div>`;
+  document.getElementById("cart-total").innerHTML=res;
+  renderEnvioAviso();
   document.getElementById("btn-enviar").disabled = totalPiezas()===0;
 }
+
+/* Envío: correos (12 o menos) o paquetería express (más de 12, o si el cliente lo elige) */
+function envioEsExpress(){ return totalPiezas()>12 || envioExpress; }
+function renderEnvioAviso(){
+  const cont=document.getElementById("envio-aviso"); if(!cont) return;
+  const t=totalPiezas();
+  if(t===0){ cont.innerHTML=""; return; }
+  if(t>12){
+    cont.innerHTML=`<div class="env-aviso express">📦 Se enviará por paquetería express</div>`;
+  }else if(envioExpress){
+    cont.innerHTML=`<div class="env-aviso express">📦 Se enviará por paquetería express (+$150)</div>
+      <button class="env-btn quitar" onclick="toggleExpress()">Usar correos de México (gratis)</button>`;
+  }else{
+    cont.innerHTML=`<div class="env-aviso correos">✉️ Se enviará por correos de México</div>
+      <button class="env-btn" onclick="toggleExpress()">Prefiero envío express +$150 pesos</button>`;
+  }
+}
+function toggleExpress(){ envioExpress=!envioExpress; renderCarrito(); }
+function eliminarItem(key){ delete carrito[key]; actualizarContador(); renderCarrito(); toast("¡Quitaste del carrito!"); }
 
 /* ============================ ZOOM ============================ */
 function abrirZoom(catSlug,secSlug,num){
   const sec=seccionDe(catSlug,secSlug);
-  zoomCtx={catSlug,secSlug,secNombre:sec.nombre,num,foto:0,cantidad:1};
+  zoomCtx={catSlug,secSlug,secNombre:sec.nombre,num,foto:0,cantidad:1,unaFoto:!!UNA_FOTO[catSlug+"/"+secSlug]};
   pintarZoom();
   document.getElementById("zoom-back").classList.add("abierto");
 }
 function pintarZoom(){
-  const z=zoomCtx; const ab=z.foto===0?"a":"b";
+  const z=zoomCtx; const ab=(z.unaFoto||z.foto===0)?"a":"b";
   const img=document.getElementById("z-img");
   img.onerror=function(){ fallback(this,'#'+z.num, z.secNombre); };
   img.src=imgColor(z.catSlug,z.secSlug,z.num,ab);
   document.getElementById("z-num").textContent="NÚMERO "+z.num;
   document.getElementById("z-sec").textContent=z.secNombre;
   document.getElementById("z-cant").value=z.cantidad;
+  const d1=document.getElementById("z-d1");
+  d1.style.display=z.unaFoto?"none":"";
   document.getElementById("z-d0").classList.toggle("on",z.foto===0);
-  document.getElementById("z-d1").classList.toggle("on",z.foto===1);
+  d1.classList.toggle("on",z.foto===1);
 }
-/* Tocar la imagen del zoom alterna entre las 2 fotos */
+/* Tocar la imagen del zoom alterna entre las 2 fotos (si tiene 2) */
 document.getElementById("z-img").addEventListener("click",()=>{
-  if(!zoomCtx) return; zoomCtx.foto=zoomCtx.foto===0?1:0; pintarZoom();
+  if(!zoomCtx||zoomCtx.unaFoto) return; zoomCtx.foto=zoomCtx.foto===0?1:0; pintarZoom();
 });
 function zoomCant(delta){ if(!zoomCtx) return; zoomCtx.cantidad=Math.max(1,zoomCtx.cantidad+delta); pintarZoom(); }
 function zoomFijar(val){
@@ -941,7 +1025,10 @@ function construirMensaje(d){
     m+=`\n${sec}\n`;
     grupos[sec].sort((a,b)=>a.num-b.num).forEach(it=>{ m+= it.num ? `#${it.num}-${it.qty} piezas\n` : `${it.qty} piezas\n`; });
   }
-  m+=`\nPiezas totales: ${totalPiezas()} piezas`;
+  m+=`\nPiezas totales: ${totalPiezas()} piezas\n`;
+  m+= envioEsExpress()
+      ? `Envío: Paquetería express${(totalPiezas()<=12 && envioExpress)?" (+$150)":""}`
+      : `Envío: Correos de México (gratis)`;
   return m;
 }
 function confirmarEnviar(){
@@ -952,7 +1039,7 @@ function confirmarEnviar(){
   const texto=encodeURIComponent(construirMensaje(d));
   window.open(`https://api.whatsapp.com/send?text=${texto}`,"_blank");
   // Limpiar y mostrar éxito
-  carrito={};
+  carrito={}; envioExpress=false;
   ["f-nombre","f-calle","f-colonia","f-estado","f-cp","f-tel","f-ref"].forEach(id=>document.getElementById(id).value="");
   actualizarContador();
   cerrarCarrito();
