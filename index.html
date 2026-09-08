@@ -879,6 +879,18 @@ function actualizarContador(){
   c.textContent=t;
   c.classList.toggle("oculto", t===0);
   document.getElementById("btn-enviar").disabled = t===0;
+  guardarCarrito();
+}
+
+/* Guardar/cargar el carrito en el propio teléfono (para que no se pierda al recargar o al dar atrás) */
+function guardarCarrito(){
+  try{ localStorage.setItem("adatex_carrito", JSON.stringify({carrito, envioExpress})); }catch(e){}
+}
+function cargarCarrito(){
+  try{
+    const d=JSON.parse(localStorage.getItem("adatex_carrito")||"null");
+    if(d && d.carrito){ carrito=d.carrito; envioExpress=!!d.envioExpress; }
+  }catch(e){}
 }
 
 function abrirCarrito(){
@@ -947,7 +959,7 @@ function renderEnvioAviso(){
       <button class="env-btn" onclick="toggleExpress()">Prefiero envío express +$150 pesos</button>`;
   }
 }
-function toggleExpress(){ envioExpress=!envioExpress; renderCarrito(); }
+function toggleExpress(){ envioExpress=!envioExpress; guardarCarrito(); renderCarrito(); }
 function eliminarItem(key){ delete carrito[key]; actualizarContador(); renderCarrito(); toast("¡Quitaste del carrito!"); }
 
 /* ============================ ZOOM ============================ */
@@ -1090,8 +1102,31 @@ function confirmarEnviar(){
 }
 
 /* ============================ INIT ============================ */
+cargarCarrito();
 renderInicio();
 actualizarContador();
+renderCarrito();
+
+/* El botón "atrás" del celular navega DENTRO del catálogo (no saca del sitio ni borra el pedido) */
+history.pushState(null,"",location.href);
+window.addEventListener("popstate", ()=>{
+  history.pushState(null,"",location.href);  // vuelve a "atrapar" el atrás
+  manejarAtras();
+});
+function manejarAtras(){
+  // 1) Si hay algo abierto encima, ciérralo
+  if(document.getElementById("zoom-back").classList.contains("abierto")){ cerrarZoom(); return; }
+  if(document.getElementById("cart-back").classList.contains("abierto")){ cerrarCarrito(); return; }
+  if(document.getElementById("menu").classList.contains("abierto")){ cerrarMenu(); return; }
+  // 2) Retrocede una pantalla
+  const act=document.querySelector(".vista.activa");
+  const id=act?act.id.replace("v-",""):"inicio";
+  if(id==="seccion" && seccionActual){
+    mostrarVista("categoria",true); requestAnimationFrame(()=>window.scrollTo(0,scrollCat)); return;
+  }
+  if(id!=="inicio"){ irInicio(); return; }
+  // 3) Ya en el inicio: se queda (no sale del catálogo)
+}
 </script>
 </body>
 </html>
