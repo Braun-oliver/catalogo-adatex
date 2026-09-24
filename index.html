@@ -107,9 +107,16 @@
   .ped-cont{text-align:center;font-size:.85rem;color:var(--suave);margin:.5rem 0;font-weight:700}
   .ped-card .btn-agregar{width:100%}
   .ped-card .btn-agregar:disabled{opacity:.65;background:#eee;border-color:var(--borde);color:var(--suave)}
-  .promo-cs{margin:1.2rem 0 .4rem;border:1px solid var(--borde);border-radius:16px;overflow:hidden;background:var(--panel);box-shadow:var(--sombra)}
+  .promo-cs{position:relative;margin:1.2rem 0 .4rem;border:1px solid var(--borde);border-radius:16px;overflow:hidden;background:var(--panel);box-shadow:var(--sombra)}
   .promo-cs-img{width:100%;display:block}
-  .promo-cs .btn-agregar{display:block;width:calc(100% - 1.4rem);margin:.8rem auto}
+  .promo-cs .cs-hit{position:absolute;background:transparent;border:none;padding:0;cursor:pointer;border-radius:999px}
+  .promo-cs .cs-hit:active{background:rgba(255,255,255,.22)}
+  .cs-info-back{display:none;position:fixed;inset:0;z-index:115;background:rgba(0,0,0,.5);align-items:center;justify-content:center;padding:1.4rem}
+  .cs-info-back.abierto{display:flex}
+  .cs-info{background:#fff;border-radius:16px;padding:1.5rem 1.3rem;max-width:340px;width:100%;position:relative;box-shadow:0 18px 50px rgba(0,0,0,.4)}
+  .cs-info h3{font-size:1.25rem;font-weight:800;margin-bottom:.6rem;color:var(--texto)}
+  .cs-info p{color:var(--texto);line-height:1.55;font-size:.98rem;white-space:pre-line}
+  .cs-info-x{position:absolute;top:.5rem;right:.7rem;background:none;border:none;font-size:1.4rem;font-weight:800;color:var(--suave);line-height:1}
   .uno-pza{font-weight:800;font-size:.95rem;color:var(--texto);padding:0 .5rem;white-space:nowrap}
   .lista-secciones .botonote{font-size:1.25rem;padding:1.2rem 1rem;border-radius:16px}
 
@@ -471,7 +478,8 @@
       <div class="promo-cs">
         <img class="promo-cs-img" src="imagenes/pedreria/chalina-sorpresa.jpg" alt="Chalina sorpresa"
              onerror="fallback(this,'CHALINA','sorpresa')">
-        <button class="btn-agregar" onclick="agregarChalinaSorpresa()">Agregar chalina sorpresa</button>
+        <button class="cs-hit" style="left:57%;top:63%;width:36%;height:15%" onclick="agregarChalinaSorpresa()" aria-label="Agregar chalina sorpresa"></button>
+        <button class="cs-hit" style="left:73%;top:80.5%;width:19%;height:9%" onclick="abrirQueEsCS()" aria-label="¿Qué es la chalina sorpresa?"></button>
       </div>
     </section>
   </main>
@@ -552,6 +560,15 @@
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
+
+<!-- ¿QUÉ ES? CHALINA SORPRESA -->
+<div class="cs-info-back" id="cs-info-back" onclick="if(event.target===this)cerrarQueEsCS()">
+  <div class="cs-info">
+    <button class="cs-info-x" onclick="cerrarQueEsCS()" aria-label="Cerrar">✕</button>
+    <h3>¿Qué es la Chalina sorpresa?</h3>
+    <p id="cs-info-text">Es una chalina al azar: no sabes qué modelo ni qué color te tocará, ¡pero trae $100 pesos de piedra! Es parte de la diversión. 🎁✨</p>
+  </div>
+</div>
 
 <!-- ÉXITO -->
 <div class="exito-back" id="exito-back">
@@ -822,6 +839,8 @@ function agregarChalinaSorpresa(){
   carrito[key].qty+=1;
   actualizarContador(); toast("¡Agregaste al carrito!");
 }
+function abrirQueEsCS(){ document.getElementById("cs-info-back").classList.add("abierto"); }
+function cerrarQueEsCS(){ document.getElementById("cs-info-back").classList.remove("abierto"); }
 
 /* CATEGORÍA: lista de secciones */
 function abrirCategoria(catSlug){
@@ -1227,6 +1246,7 @@ window.addEventListener("popstate", ()=>{
 });
 function manejarAtras(){
   // 1) Si hay algo abierto encima, ciérralo
+  if(document.getElementById("cs-info-back").classList.contains("abierto")){ cerrarQueEsCS(); return; }
   if(document.getElementById("zoom-back").classList.contains("abierto")){ cerrarZoom(); return; }
   if(document.getElementById("cart-back").classList.contains("abierto")){ cerrarCarrito(); return; }
   if(document.getElementById("menu").classList.contains("abierto")){ cerrarMenu(); return; }
