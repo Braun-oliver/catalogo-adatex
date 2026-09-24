@@ -83,6 +83,9 @@
      mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 12H5M12 19l-7-7 7-7'/%3E%3C/svg%3E") center/contain no-repeat}
   .tit-pagina h1{flex:1;text-align:center;padding-right:46px;margin:0;font-size:1.6rem;font-weight:700;letter-spacing:.02em}
   .centro-tit{text-align:center;font-size:1.7rem;font-weight:700;margin:1.5rem 0 1.6rem;letter-spacing:.03em}
+  .publicidad{border:2.5px solid var(--halo,#c79ce9);border-radius:16px;overflow:hidden;background:#eceaf0;
+              box-shadow:var(--sombra);margin-bottom:1.2rem;aspect-ratio:16/10}
+  .publicidad video{width:100%;height:100%;object-fit:cover;display:block;background:#eceaf0}
 
   /* Botones grandes de categoría / lista de secciones */
   .botonotes{display:flex;flex-direction:column;gap:1.2rem}
@@ -94,6 +97,20 @@
   .boton-op{align-self:flex-start;background:var(--panel);border:1px solid var(--borde);color:var(--texto);
             border-radius:12px;padding:.7rem 1.15rem;font-size:1rem;font-weight:700;box-shadow:var(--sombra);margin-top:.1rem}
   .boton-op:active{transform:scale(.98)}
+  /* ---------- PEDRERÍA ---------- */
+  .ped-video{border-radius:12px;overflow:hidden;background:#000;box-shadow:var(--sombra);margin:.4rem 0 1rem;aspect-ratio:16/10}
+  .ped-video video{width:100%;height:100%;object-fit:cover;display:block}
+  .ped-browser{display:flex;align-items:center;gap:.5rem}
+  .ped-nav{flex:0 0 auto;width:42px;height:60px;font-size:2rem;font-weight:800;color:var(--texto);background:var(--panel);border:1px solid var(--borde);border-radius:12px;box-shadow:var(--sombra)}
+  .ped-nav:active{background:#eee}
+  .ped-card{flex:1;min-width:0;border:2.5px solid var(--halo,#c79ce9);border-radius:16px;background:var(--panel);padding:.6rem;box-shadow:var(--sombra)}
+  .ped-cont{text-align:center;font-size:.85rem;color:var(--suave);margin:.5rem 0;font-weight:700}
+  .ped-card .btn-agregar{width:100%}
+  .ped-card .btn-agregar:disabled{opacity:.65;background:#eee;border-color:var(--borde);color:var(--suave)}
+  .promo-cs{margin:1.2rem 0 .4rem;border:1px solid var(--borde);border-radius:16px;overflow:hidden;background:var(--panel);box-shadow:var(--sombra)}
+  .promo-cs-img{width:100%;display:block}
+  .promo-cs .btn-agregar{display:block;width:calc(100% - 1.4rem);margin:.8rem auto}
+  .uno-pza{font-weight:800;font-size:.95rem;color:var(--texto);padding:0 .5rem;white-space:nowrap}
   .lista-secciones .botonote{font-size:1.25rem;padding:1.2rem 1rem;border-radius:16px}
 
   /* Secciones en cuadros con imagen de fondo (2 columnas) */
@@ -333,6 +350,9 @@
     <!-- INICIO -->
     <section class="vista activa" id="v-inicio">
       <div class="centro-tit">CATÁLOGO ADATEX</div>
+      <div class="publicidad">
+        <video src="imagenes/publicidad.mp4" autoplay muted loop playsinline preload="auto"></video>
+      </div>
       <div class="botonotes" id="cats-inicio"></div>
     </section>
 
@@ -427,6 +447,31 @@
       <p class="op-intro">¿Qué te pareció? Califícanos y déjanos tu opinión o duda. 💜</p>
       <div class="op-form">
         <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdssaqQaWeEArdw2eqMHytCmpUD2T27La_qLx9bNwr0QXsz5w/viewform?embedded=true" width="100%" height="720" frameborder="0" marginheight="0" marginwidth="0" loading="lazy">Cargando…</iframe>
+      </div>
+    </section>
+
+    <!-- PEDRERÍA -->
+    <section class="vista" id="v-pedreria">
+      <div class="tit-pagina">
+        <button class="atras" onclick="irInicio()">←</button>
+        <h1>Pedrería</h1>
+      </div>
+      <div class="ped-video">
+        <video id="ped-video" src="imagenes/pedreria/video.mp4" muted loop playsinline preload="auto"></video>
+      </div>
+      <div class="ped-browser">
+        <button class="ped-nav" onclick="pedreriaMover(-1)" aria-label="Anterior">‹</button>
+        <div class="ped-card">
+          <div class="tar-img"><img id="ped-img" alt=""><span class="num-label" id="ped-num">#1</span></div>
+          <div class="ped-cont" id="ped-cont">Piedra 1 de ${''}</div>
+          <button class="btn-agregar" id="ped-agregar" onclick="agregarPiedra()">AGREGAR AL CARRITO</button>
+        </div>
+        <button class="ped-nav" onclick="pedreriaMover(1)" aria-label="Siguiente">›</button>
+      </div>
+      <div class="promo-cs">
+        <img class="promo-cs-img" src="imagenes/pedreria/chalina-sorpresa.jpg" alt="Chalina sorpresa"
+             onerror="fallback(this,'CHALINA','sorpresa')">
+        <button class="btn-agregar" onclick="agregarChalinaSorpresa()">Agregar chalina sorpresa</button>
       </div>
     </section>
   </main>
@@ -617,6 +662,13 @@ const SECCIONES_NUEVO = {
   "medallon/septiembre-2026":true,
 };
 
+// PEDRERÍA: piezas únicas (solo hay 1 de cada una).
+const PEDRERIA_TOTAL = 42;               // cuántas piedras hay
+// Piedras VENDIDAS: agrega el número cuando se venda, ej: { 5:true, 12:true }
+const PEDRERIA_VENDIDAS = {
+};
+let piedraIdx = 1;                       // piedra que se está viendo
+
 /* ============================ DATOS ============================ */
 /* [nombre, número de colores] por categoría */
 const CATEGORIAS = [
@@ -687,6 +739,7 @@ function mostrarVista(id, keepScroll){
   document.getElementById("v-"+id).classList.add("activa");
   detenerCarrusel();
   const lv=document.getElementById("lamp-video"); if(lv && id!=="lampara") lv.pause();
+  const pv=document.getElementById("ped-video"); if(pv && id!=="pedreria") pv.pause();
   cerrarMenu();
   if(!keepScroll) window.scrollTo(0,0);
 }
@@ -699,6 +752,7 @@ function renderInicio(){
   document.getElementById("cats-inicio").innerHTML =
     CATEGORIAS.map(c=>`<button class="botonote" onclick="abrirCategoria('${c.slug}')">${c.nombre}</button>`).join("")
     + `<button class="botonote" onclick="abrirLampara()">LÁMPARA CONMEMORATIVA</button>`
+    + `<button class="botonote" onclick="abrirPedreria()">PEDRERÍA</button>`
     + `<button class="boton-op" onclick="mostrarVista('opiniones')">Dudas y opiniones</button>`;
 }
 
@@ -729,6 +783,44 @@ function agregarLampara(){
   carrito[key].qty+=c;
   actualizarContador(); toast("¡Agregaste al carrito!");
   if(el) el.value=1;
+}
+
+/* ============================ PEDRERÍA ============================ */
+function abrirPedreria(){
+  mostrarVista("pedreria");
+  const v=document.getElementById("ped-video");
+  if(v){ v.muted=true; const p=v.play(); if(p&&p.catch) p.catch(()=>{}); }
+  piedraIdx=1; pintarPiedra();
+}
+function pedreriaMover(d){
+  piedraIdx+=d;
+  if(piedraIdx<1) piedraIdx=PEDRERIA_TOTAL;
+  if(piedraIdx>PEDRERIA_TOTAL) piedraIdx=1;
+  pintarPiedra();
+}
+function pintarPiedra(){
+  const n=piedraIdx;
+  const img=document.getElementById("ped-img");
+  if(img){ img.onerror=function(){ fallback(this,'#'+n,'Pedrería'); }; img.src=`imagenes/pedreria/${n}.jpg`; }
+  const nl=document.getElementById("ped-num"); if(nl) nl.textContent="#"+n;
+  const cont=document.getElementById("ped-cont"); if(cont) cont.textContent="Piedra "+n+" de "+PEDRERIA_TOTAL;
+  const btn=document.getElementById("ped-agregar"); if(!btn) return;
+  const key="pedreria/pedreria/"+n;
+  if(PEDRERIA_VENDIDAS[n]){ btn.textContent="VENDIDO"; btn.disabled=true; }
+  else if(carrito[key]){ btn.textContent="✓ EN TU CARRITO"; btn.disabled=true; }
+  else { btn.textContent="AGREGAR AL CARRITO"; btn.disabled=false; }
+}
+function agregarPiedra(){
+  const n=piedraIdx, key="pedreria/pedreria/"+n;
+  if(PEDRERIA_VENDIDAS[n] || carrito[key]) return;
+  carrito[key]={catSlug:"pedreria",catNombre:"Pedrería",secSlug:"pedreria",secNombre:"Pedrería",num:n,qty:1,unica:true,img:`imagenes/pedreria/${n}.jpg`};
+  actualizarContador(); toast("¡Agregaste al carrito!"); pintarPiedra();
+}
+function agregarChalinaSorpresa(){
+  const key="chalina/chalina/u";
+  if(!carrito[key]) carrito[key]={catSlug:"chalina",catNombre:"",secSlug:"chalina",secNombre:"Chalina sorpresa",num:"",qty:0,img:"imagenes/pedreria/chalina-sorpresa.jpg"};
+  carrito[key].qty+=1;
+  actualizarContador(); toast("¡Agregaste al carrito!");
 }
 
 /* CATEGORÍA: lista de secciones */
@@ -892,6 +984,7 @@ function actualizarContador(){
   c.textContent=t;
   c.classList.toggle("oculto", t===0);
   document.getElementById("btn-enviar").disabled = t===0;
+  if(document.getElementById("v-pedreria")?.classList.contains("activa") && document.getElementById("ped-agregar")) pintarPiedra();
   guardarCarrito();
 }
 
@@ -936,12 +1029,12 @@ function renderCarrito(){
         <img loading="lazy" decoding="async" src="${it.img || imgColor(it.catSlug,it.secSlug,it.num,'a')}" alt=""
              onerror="fallback(this,'${it.num?('#'+it.num):''}','')">
         <div class="ti"><b>${it.secNombre}${it.num?(' #'+it.num):''}</b><small>${it.catNombre||''}</small>${it.porta?`<button class="ti-porta" onclick="togglePortaItem('${key}')">🎁 Porta chalina +$15 <span class="ti-porta-x">✕</span></button>`:''}</div>
-        <div class="stepper">
+        ${it.unica ? `<span class="uno-pza">1 pza</span>` : `<div class="stepper">
           <button onclick="cambiarCarrito('${key}',-1)">−</button>
           <input type="text" inputmode="numeric" value="${it.qty}"
                  onchange="fijarCarrito('${key}',this.value)" onfocus="this.select()">
           <button onclick="cambiarCarrito('${key}',1)">+</button>
-        </div>
+        </div>`}
         <button class="item-del" onclick="eliminarItem('${key}')" title="Eliminar" aria-label="Eliminar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
       </div>`).join("");
   }
@@ -1095,6 +1188,8 @@ function construirMensaje(d){
     m+=`Total: ${subtotal} ${subtotal===1?'pieza':'piezas'}\n`;
   }
   m+=`\nPiezas totales: ${totalPiezas()} piezas\n`;
+  const totalPorta=Object.values(carrito).reduce((s,it)=>s+(it.porta?it.qty:0),0);
+  if(totalPorta>0) m+=`Porta chalinas: ${totalPorta} (+$15 c/u)\n`;
   m+= envioEsExpress()
       ? `Envío: Paquetería express${(totalPiezas()<12 && envioExpress)?" (+$150)":""}`
       : `Envío: Correos de México`;
