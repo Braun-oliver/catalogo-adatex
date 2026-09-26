@@ -1203,7 +1203,7 @@ function construirMensaje(d){
   for(const sec in grupos){
     m+=`\n${sec}\n`;
     let subtotal=0;
-    grupos[sec].sort((a,b)=>a.num-b.num).forEach(it=>{ subtotal+=it.qty; let l = it.num ? `#${it.num}-${it.qty} piezas` : `${it.qty} piezas`; if(it.porta) l+=" + porta chalina ($15)"; m+=l+"\n"; });
+    grupos[sec].sort((a,b)=>a.num-b.num).forEach(it=>{ subtotal+=it.qty; let l = it.num ? `#${it.num}-${it.qty} piezas` : `${it.qty} piezas`; if(it.porta) l+=" + porta chalina ($15)"; if(it.catSlug==="lampara") l+=" ($200)"; m+=l+"\n"; });
     m+=`Total: ${subtotal} ${subtotal===1?'pieza':'piezas'}\n`;
   }
   m+=`\nPiezas totales: ${totalPiezas()} piezas\n`;
