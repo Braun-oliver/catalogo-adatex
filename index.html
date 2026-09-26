@@ -461,7 +461,7 @@
     <section class="vista" id="v-pedreria">
       <div class="tit-pagina">
         <button class="atras" onclick="irInicio()">←</button>
-        <h1>Pedrería</h1>
+        <h1>PEDRERÍA</h1>
       </div>
       <div class="ped-video">
         <video id="ped-video" src="imagenes/pedreria/video.mp4" muted loop playsinline preload="auto"></video>
@@ -478,8 +478,8 @@
       <div class="promo-cs">
         <img class="promo-cs-img" src="imagenes/pedreria/chalina-sorpresa.jpg" alt="Chalina sorpresa"
              onerror="fallback(this,'CHALINA','sorpresa')">
-        <button class="cs-hit" style="left:57%;top:63%;width:36%;height:15%" onclick="agregarChalinaSorpresa()" aria-label="Agregar chalina sorpresa"></button>
-        <button class="cs-hit" style="left:73%;top:80.5%;width:19%;height:9%" onclick="abrirQueEsCS()" aria-label="¿Qué es la chalina sorpresa?"></button>
+        <button class="cs-hit" style="left:58.2%;top:64.8%;width:33.4%;height:13.8%" onclick="agregarChalinaSorpresa()" aria-label="Agregar chalina sorpresa a carrito"></button>
+        <button class="cs-hit" style="left:58.2%;top:81.7%;width:33.4%;height:11.9%" onclick="abrirQueEsCS()" aria-label="¿Esto que es?"></button>
       </div>
     </section>
   </main>
@@ -566,7 +566,7 @@
   <div class="cs-info">
     <button class="cs-info-x" onclick="cerrarQueEsCS()" aria-label="Cerrar">✕</button>
     <h3>¿Qué es la Chalina sorpresa?</h3>
-    <p id="cs-info-text">Es una chalina al azar: no sabes qué modelo ni qué color te tocará, ¡pero trae $100 pesos de piedra! Es parte de la diversión. 🎁✨</p>
+    <p id="cs-info-text">¡Es una chalina al azar con piedras! No sabes qué modelo ni qué color te tocará. El costo es de la chalina +$50 pesos. 🎁✨</p>
   </div>
 </div>
 
@@ -767,9 +767,9 @@ function cerrarMenu(){ document.getElementById("menu").classList.remove("abierto
 /* INICIO: botones de categoría */
 function renderInicio(){
   document.getElementById("cats-inicio").innerHTML =
-    CATEGORIAS.map(c=>`<button class="botonote" onclick="abrirCategoria('${c.slug}')">${c.nombre}</button>`).join("")
+    `<button class="botonote" onclick="abrirPedreria()">PEDRERÍA</button>`
+    + CATEGORIAS.map(c=>`<button class="botonote" onclick="abrirCategoria('${c.slug}')">${c.nombre}</button>`).join("")
     + `<button class="botonote" onclick="abrirLampara()">LÁMPARA CONMEMORATIVA</button>`
-    + `<button class="botonote" onclick="abrirPedreria()">PEDRERÍA</button>`
     + `<button class="boton-op" onclick="mostrarVista('opiniones')">Dudas y opiniones</button>`;
 }
 
