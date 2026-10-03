@@ -93,7 +93,19 @@
             min-height:128px;display:flex;align-items:center;justify-content:center;
             font-size:1.9rem;font-weight:700;text-align:center;letter-spacing:.04em;
             box-shadow:var(--sombra)}
+  .botonote{position:relative}
   .botonote:active{transform:scale(.99)}
+  .cat-nuevo{position:absolute;top:10px;right:10px;background:linear-gradient(180deg,#d94b3b,#a81f12);
+    color:#fff;font-size:.72rem;font-weight:800;letter-spacing:.03em;text-transform:uppercase;
+    padding:.28rem .6rem;border-radius:7px;box-shadow:0 3px 8px rgba(0,0,0,.35);line-height:1}
+  /* Hojas de otoño al abrir */
+  #hojas{position:fixed;inset:0;z-index:9999;pointer-events:none;overflow:hidden}
+  #hojas span{position:absolute;top:-10%;will-change:transform,opacity;animation:caer linear forwards}
+  @keyframes caer{
+    0%{transform:translateY(-10vh) rotate(0deg);opacity:0}
+    10%{opacity:1}
+    100%{transform:translateY(110vh) rotate(var(--giro));opacity:1}
+  }
   .boton-op{align-self:flex-start;background:var(--panel);border:1px solid var(--borde);color:var(--texto);
             border-radius:12px;padding:.7rem 1.15rem;font-size:1rem;font-weight:700;box-shadow:var(--sombra);margin-top:.1rem}
   .boton-op:active{transform:scale(.98)}
@@ -654,7 +666,7 @@ const AGOTADOS = {
   "varios/arco/11":true,"varios/arco/14":true,
   "varios/med-escudo/3":true,"varios/med-escudo/4":true,"varios/med-escudo/25":true,"varios/med-escudo/26":true,
   // BORDADAS (números sueltos)
-  "bordadas/milhojas/5":true,"bordadas/milhojas/13":true,"bordadas/milhojas/25":true,"bordadas/milhojas/36":true,"bordadas/milhojas/38":true,
+  "bordadas/milhojas/5":true,"bordadas/milhojas/13":true,"bordadas/milhojas/36":true,"bordadas/milhojas/38":true,
   "bordadas/bordada-m5/5":true,"bordadas/bordada-m5/8":true,"bordadas/bordada-m5/11":true,"bordadas/bordada-m5/12":true,"bordadas/bordada-m5/15":true,"bordadas/bordada-m5/20":true,
 };
 
@@ -677,6 +689,7 @@ const UNA_FOTO = {
 // Secciones marcadas como "NUEVO MODELO" (listón rojo en la tarjeta).
 const SECCIONES_NUEVO = {
   "medallon/septiembre-2026":true,
+  "varios/itzel":true,
 };
 
 // PEDRERÍA: piezas únicas (solo hay 1 de cada una).
@@ -697,7 +710,7 @@ const CATEGORIAS = [
     ["FEBRERO 2024",15],["JUNIO 2024",25],["ABRIL 2023",24],["FEBRERO 2023",27],
   ]},
   { slug:"varios", nombre:"VARIOS", secciones:[
-    ["BELÉN",25],["ZARETH",21],["ELISA 2026",27],["FANNY 2025",30],["JAZMÍN 2026",28],["ELEFANTE",25],
+    ["ITZEL",20],["BELÉN",25],["ZARETH",21],["ELISA 2026",27],["FANNY 2025",30],["JAZMÍN 2026",28],["ELEFANTE",25],
     ["CENTENARIO 1",10],["CENTENARIO 2",10],["JAEL 2024",15],["JAEL 2023",15],["ANA 2024",20],
     ["ANA 2023",18],["DAN 2025",14],["DAN 2023",15],["ANGEL",24],["ARPA",10],["ARCO",14],
     ["MED. ESCUDO",28],["ECONÓMICA 14",14],["ECONÓMICA 6",6],
@@ -768,7 +781,10 @@ function cerrarMenu(){ document.getElementById("menu").classList.remove("abierto
 function renderInicio(){
   document.getElementById("cats-inicio").innerHTML =
     `<button class="botonote" onclick="abrirPedreria()">PEDRERÍA</button>`
-    + CATEGORIAS.map(c=>`<button class="botonote" onclick="abrirCategoria('${c.slug}')">${c.nombre}</button>`).join("")
+    + CATEGORIAS.map(c=>{
+        const tieneNuevo=c.secciones.some(([nom])=>SECCIONES_NUEVO[c.slug+"/"+slug(nom)]);
+        return `<button class="botonote" onclick="abrirCategoria('${c.slug}')">${c.nombre}${tieneNuevo?'<span class="cat-nuevo">Modelo nuevo</span>':''}</button>`;
+      }).join("")
     + `<button class="botonote" onclick="abrirLampara()">LÁMPARA CONMEMORATIVA</button>`
     + `<button class="boton-op" onclick="mostrarVista('opiniones')">Dudas y opiniones</button>`;
 }
@@ -1237,6 +1253,31 @@ cargarCarrito();
 renderInicio();
 actualizarContador();
 renderCarrito();
+
+/* Hojas de otoño cayendo ~2.5s al abrir el catálogo */
+function hojasOtono(){
+  const cont=document.createElement("div"); cont.id="hojas"; document.body.appendChild(cont);
+  const hojas=["🍂","🍁"];
+  function soltar(){
+    const n=2+Math.floor(Math.random()*2);     // 2-3 hojas por tanda
+    for(let i=0;i<n;i++){
+      const s=document.createElement("span");
+      s.textContent=hojas[Math.floor(Math.random()*hojas.length)];
+      const dur=2+Math.random()*0.9;
+      s.style.left=(Math.random()*100)+"vw";
+      s.style.fontSize=(30+Math.random()*26)+"px"; // más grandes (30–56px)
+      s.style.setProperty("--giro",(Math.random()*720-360)+"deg");
+      s.style.animationDuration=dur+"s";
+      cont.appendChild(s);
+    }
+  }
+  soltar();
+  const emisor=setInterval(soltar,170);         // sigue saliendo lluvia de hojas
+  // a los 3s: deja de generar y todo se desvanece
+  setTimeout(()=>{ clearInterval(emisor); cont.style.transition="opacity .9s"; cont.style.opacity="0"; }, 3000);
+  setTimeout(()=>{ cont.remove(); }, 4000);
+}
+hojasOtono();
 
 /* El botón "atrás" del celular navega DENTRO del catálogo (no saca del sitio ni borra el pedido) */
 history.pushState(null,"",location.href);
