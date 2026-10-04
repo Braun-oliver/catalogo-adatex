@@ -688,8 +688,9 @@ const UNA_FOTO = {
 
 // Secciones marcadas como "NUEVO MODELO" (listón rojo en la tarjeta).
 const SECCIONES_NUEVO = {
-  "medallon/septiembre-2026":true,
-  "varios/itzel":true,
+  "medallon/septiembre-2026":"Modelo nuevo",
+  "varios/itzel":"Modelo nuevo",
+  "varios/centenario-2":"Colores nuevos",
 };
 
 // PEDRERÍA: piezas únicas (solo hay 1 de cada una).
@@ -866,12 +867,12 @@ function abrirCategoria(catSlug){
     c.secciones.map(([nombre])=>{
       const s=slug(nombre);
       const sAgot=!!SECCIONES_AGOTADAS[c.slug+"/"+s];
-      const sNuevo=!!SECCIONES_NUEVO[c.slug+"/"+s];
+      const sNuevo=SECCIONES_NUEVO[c.slug+"/"+s];
       return `<button class="sec-cuadro ${sAgot?'sec-agotada':''}" ${sAgot?'':`onclick="abrirSeccion('${c.slug}','${s}')"`}>
         ${sAgot?'':`<img loading="lazy" decoding="async" src="${imgCover(c.slug,s)}" alt="${nombre}" onerror="fallback(this,'${nombre}','')">`}
         <span class="ov"></span><span class="nm">${nombre}</span>
         ${sAgot?'<span class="sec-agot-tag">Agotado</span>':''}
-        ${(sNuevo&&!sAgot)?'<span class="nuevo-badge">Modelo nuevo</span>':''}
+        ${(sNuevo&&!sAgot)?'<span class="nuevo-badge">'+sNuevo+'</span>':''}
       </button>`;
     }).join("");
   mostrarVista("categoria");
