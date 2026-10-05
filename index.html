@@ -476,7 +476,7 @@
         <h1>PEDRERÍA</h1>
       </div>
       <div class="ped-video">
-        <video id="ped-video" src="imagenes/pedreria/video.mp4" muted loop playsinline preload="auto"></video>
+        <video id="ped-video" src="imagenes/pedreria/video.mp4" muted loop playsinline preload="metadata"></video>
       </div>
       <div class="ped-browser">
         <button class="ped-nav" onclick="pedreriaMover(-1)" aria-label="Anterior">‹</button>
@@ -842,6 +842,14 @@ function pintarPiedra(){
   if(PEDRERIA_VENDIDAS[n]){ btn.textContent="VENDIDO"; btn.disabled=true; }
   else if(carrito[key]){ btn.textContent="✓ EN TU CARRITO"; btn.disabled=true; }
   else { btn.textContent="AGREGAR AL CARRITO"; btn.disabled=false; }
+  preloadPiedras();
+}
+/* Pre-carga las siguientes piedras para que "siguiente" sea instantáneo */
+let _preCache=[];
+function preloadPiedras(){
+  const disp=piedrasDisp(); const pos=disp.indexOf(piedraIdx); if(pos<0) return;
+  const nums=[pos+1,pos+2,pos+3,pos-1].map(i=>disp[(i+disp.length)%disp.length]).filter(v=>v);
+  _preCache=nums.map(n=>{ const im=new Image(); im.src=`imagenes/pedreria/${n}.jpg`; return im; });
 }
 function agregarPiedra(){
   const n=piedraIdx, key="pedreria/pedreria/"+n;
