@@ -95,7 +95,7 @@
             box-shadow:var(--sombra)}
   .botonote{position:relative}
   .botonote:active{transform:scale(.99)}
-  .cat-nuevo{position:absolute;top:10px;right:10px;background:linear-gradient(180deg,#d94b3b,#a81f12);
+  .cat-nuevo{position:absolute;top:10px;left:10px;background:linear-gradient(180deg,#d94b3b,#a81f12);
     color:#fff;font-size:.72rem;font-weight:800;letter-spacing:.03em;text-transform:uppercase;
     padding:.28rem .6rem;border-radius:7px;box-shadow:0 3px 8px rgba(0,0,0,.35);line-height:1}
   /* Hojas de otoño al abrir */
@@ -564,7 +564,7 @@
         </div>
       </div>
 
-      <button class="btn-enviar" id="btn-enviar" onclick="intentarEnviar()" disabled>ENVIAR PEDIDO</button>
+      <button class="btn-enviar" id="btn-enviar" onclick="intentarEnviar()" disabled>ENVIAR PEDIDO POR WHATSAPP</button>
       <p class="nota">No se cobra en el sitio. El pedido se confirma por WhatsApp.</p>
     </div>
   </div>
@@ -618,9 +618,7 @@ const AGOTADOS = {
   "bordadas/media-luna/19":true,"bordadas/media-luna/20":true,
   // ---- VARIOS: números sin existencia ----
   "varios/fanny-2025/8":true,"varios/fanny-2025/29":true,
-  "varios/zareth/9":true,
-  "varios/centenario-2/2":true,
-  "varios/ana-2023/3":true,"varios/ana-2023/4":true,"varios/ana-2023/16":true,
+  "varios/zareth/9":true,  "varios/ana-2023/3":true,"varios/ana-2023/4":true,"varios/ana-2023/16":true,
   "varios/dan-2023/4":true,"varios/dan-2025/5":true,"varios/dan-2025/10":true,
   "varios/arco/11":true,"varios/arco/14":true,
   "varios/jael-2023/5":true,"varios/jael-2023/6":true,
@@ -656,9 +654,7 @@ const AGOTADOS = {
   "medallon/abril-2023/3":true,"medallon/abril-2023/11":true,"medallon/abril-2023/14":true,"medallon/abril-2023/18":true,"medallon/abril-2023/24":true,
   "medallon/febrero-2023/22":true,
   // VARIOS
-  "varios/centenario-1/4":true,
-  "varios/centenario-2/2":true,
-  "varios/jael-2024/4":true,"varios/jael-2024/14":true,
+  "varios/centenario-1/4":true,  "varios/jael-2024/4":true,"varios/jael-2024/14":true,
   "varios/ana-2023/3":true,"varios/ana-2023/4":true,"varios/ana-2023/16":true,
   "varios/dan-2025/4":true,"varios/dan-2025/5":true,"varios/dan-2025/10":true,"varios/dan-2025/14":true,
   "varios/dan-2023/4":true,
@@ -697,8 +693,10 @@ const SECCIONES_NUEVO = {
 const PEDRERIA_TOTAL = 42;               // cuántas piedras hay
 // Piedras VENDIDAS: agrega el número cuando se venda, ej: { 5:true, 12:true }
 const PEDRERIA_VENDIDAS = {
+  1:true,4:true,5:true,15:true,22:true,23:true,24:true,31:true,32:true,37:true,41:true,
 };
 let piedraIdx = 1;                       // piedra que se está viendo
+function piedrasDisp(){ const a=[]; for(let i=1;i<=PEDRERIA_TOTAL;i++) if(!PEDRERIA_VENDIDAS[i]) a.push(i); return a; }
 
 /* ============================ DATOS ============================ */
 /* [nombre, número de colores] por categoría */
@@ -824,20 +822,21 @@ function abrirPedreria(){
   mostrarVista("pedreria");
   const v=document.getElementById("ped-video");
   if(v){ v.muted=true; const p=v.play(); if(p&&p.catch) p.catch(()=>{}); }
-  piedraIdx=1; pintarPiedra();
+  const disp=piedrasDisp(); piedraIdx=disp.length?disp[0]:1; pintarPiedra();
 }
 function pedreriaMover(d){
-  piedraIdx+=d;
-  if(piedraIdx<1) piedraIdx=PEDRERIA_TOTAL;
-  if(piedraIdx>PEDRERIA_TOTAL) piedraIdx=1;
+  const disp=piedrasDisp(); if(!disp.length) return;
+  let pos=disp.indexOf(piedraIdx); if(pos<0) pos=0;
+  pos=(pos+d+disp.length)%disp.length;
+  piedraIdx=disp[pos];
   pintarPiedra();
 }
 function pintarPiedra(){
-  const n=piedraIdx;
+  const n=piedraIdx; const disp=piedrasDisp();
   const img=document.getElementById("ped-img");
   if(img){ img.onerror=function(){ fallback(this,'#'+n,'Pedrería'); }; img.src=`imagenes/pedreria/${n}.jpg`; }
   const nl=document.getElementById("ped-num"); if(nl) nl.textContent="#"+n;
-  const cont=document.getElementById("ped-cont"); if(cont) cont.textContent="Piedra "+n+" de "+PEDRERIA_TOTAL;
+  const cont=document.getElementById("ped-cont"); if(cont) cont.textContent="Piedra "+(disp.indexOf(n)+1)+" de "+disp.length;
   const btn=document.getElementById("ped-agregar"); if(!btn) return;
   const key="pedreria/pedreria/"+n;
   if(PEDRERIA_VENDIDAS[n]){ btn.textContent="VENDIDO"; btn.disabled=true; }
@@ -1258,7 +1257,7 @@ renderCarrito();
 /* Hojas de otoño cayendo ~2.5s al abrir el catálogo */
 function hojasOtono(){
   const cont=document.createElement("div"); cont.id="hojas"; document.body.appendChild(cont);
-  const hojas=["🍂","🍁"];
+  const hojas=["🍂","🍁","🍂","🍁","🎃"];
   function soltar(){
     const n=2+Math.floor(Math.random()*2);     // 2-3 hojas por tanda
     for(let i=0;i<n;i++){
