@@ -191,10 +191,10 @@
   .btn-agregar{background:#fff;border:1.5px solid var(--teal);color:var(--teal2);
                font-weight:700;font-size:.72rem;letter-spacing:.03em;padding:.5rem;border-radius:9px}
   .btn-agregar:active{background:var(--teal);color:#fff}
-  .btn-porta{display:block;width:100%;margin-top:.7rem;background:#efeef1;border:1px solid var(--borde);
-             color:var(--texto);border-radius:10px;padding:.75rem;font-size:.92rem;font-weight:700}
-  .btn-porta.on{background:var(--teal);color:#fff;border-color:var(--teal)}
-  .btn-porta:active{transform:scale(.99)}
+  .porta-row{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-top:.7rem;
+             background:#efeef1;border:1px solid var(--borde);border-radius:10px;padding:.6rem .8rem}
+  .porta-label{font-size:.92rem;font-weight:700;color:var(--texto)}
+  .porta-stepper{flex:0 0 auto}
   .tarjeta.agotado{opacity:.7}
   .tarjeta.agotado .tar-img{filter:grayscale(1);cursor:default}
   .agotado-tag{text-align:center;font-weight:700;font-size:.85rem;color:var(--suave);
@@ -476,7 +476,7 @@
         <h1>PEDRERÍA</h1>
       </div>
       <div class="ped-video">
-        <video id="ped-video" src="imagenes/pedreria/video.mp4" muted loop playsinline preload="auto"></video>
+        <video id="ped-video" src="imagenes/pedreria/video.mp4" muted loop playsinline preload="metadata"></video>
       </div>
       <div class="ped-browser">
         <button class="ped-nav" onclick="pedreriaMover(-1)" aria-label="Anterior">‹</button>
@@ -528,7 +528,14 @@
       </div>
       <button class="btn-agregar" onclick="zoomAgregar()">AGREGAR AL CARRITO</button>
     </div>
-    <button class="btn-porta" id="z-porta" onclick="zoomTogglePorta()">+$15 Añadir porta chalina</button>
+    <div class="porta-row">
+      <span class="porta-label">🎁 Porta chalina <b>+$15</b></span>
+      <div class="stepper porta-stepper">
+        <button onclick="zoomPorta(-1)">−</button>
+        <input id="z-porta-cant" type="text" inputmode="numeric" value="0" onchange="zoomPortaFijar(this.value)" onfocus="this.select()">
+        <button onclick="zoomPorta(1)">+</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -618,7 +625,7 @@ const AGOTADOS = {
   "bordadas/media-luna/19":true,"bordadas/media-luna/20":true,
   // ---- VARIOS: números sin existencia ----
   "varios/fanny-2025/8":true,"varios/fanny-2025/29":true,
-  "varios/zareth/9":true,  "varios/ana-2023/3":true,"varios/ana-2023/4":true,"varios/ana-2023/16":true,
+  "varios/zareth/9":true,"varios/zareth/20":true,  "varios/ana-2023/3":true,"varios/ana-2023/4":true,"varios/ana-2023/16":true,
   "varios/dan-2023/4":true,"varios/dan-2025/5":true,"varios/dan-2025/10":true,
   "varios/arco/11":true,"varios/arco/14":true,
   "varios/jael-2023/5":true,"varios/jael-2023/6":true,
@@ -663,7 +670,7 @@ const AGOTADOS = {
   "varios/med-escudo/3":true,"varios/med-escudo/4":true,"varios/med-escudo/25":true,"varios/med-escudo/26":true,
   // BORDADAS (números sueltos)
   "bordadas/milhojas/5":true,"bordadas/milhojas/13":true,"bordadas/milhojas/36":true,"bordadas/milhojas/38":true,
-  "bordadas/bordada-m5/5":true,"bordadas/bordada-m5/8":true,"bordadas/bordada-m5/11":true,"bordadas/bordada-m5/12":true,"bordadas/bordada-m5/15":true,"bordadas/bordada-m5/20":true,
+  "bordadas/bordada-m5/5":true,"bordadas/bordada-m5/11":true,"bordadas/bordada-m5/12":true,"bordadas/bordada-m5/15":true,"bordadas/bordada-m5/20":true,
 };
 
 // SECCIONES COMPLETAS agotadas: el modelo entero se marca agotado (tarjeta gris
@@ -842,6 +849,14 @@ function pintarPiedra(){
   if(PEDRERIA_VENDIDAS[n]){ btn.textContent="VENDIDO"; btn.disabled=true; }
   else if(carrito[key]){ btn.textContent="✓ EN TU CARRITO"; btn.disabled=true; }
   else { btn.textContent="AGREGAR AL CARRITO"; btn.disabled=false; }
+  preloadPiedras();
+}
+/* Pre-carga las siguientes piedras para que "siguiente" sea instantáneo */
+let _preCache=[];
+function preloadPiedras(){
+  const disp=piedrasDisp(); const pos=disp.indexOf(piedraIdx); if(pos<0) return;
+  const nums=[pos+1,pos+2,pos+3,pos-1].map(i=>disp[(i+disp.length)%disp.length]).filter(v=>v);
+  _preCache=nums.map(n=>{ const im=new Image(); im.src=`imagenes/pedreria/${n}.jpg`; return im; });
 }
 function agregarPiedra(){
   const n=piedraIdx, key="pedreria/pedreria/"+n;
@@ -988,11 +1003,11 @@ function agregarDesdeTarjeta(catSlug,secSlug,num){
 }
 
 /* ============================ CARRITO ============================ */
-function agregarAlCarrito(sec,num,cantidad,porta){
+function agregarAlCarrito(sec,num,cantidad,portaQty){
   const key=keyDe(sec.catSlug,sec.slug,num);
-  if(!carrito[key]) carrito[key]={catSlug:sec.catSlug,catNombre:sec.catNombre,secSlug:sec.slug,secNombre:sec.nombre,num,qty:0,porta:false};
+  if(!carrito[key]) carrito[key]={catSlug:sec.catSlug,catNombre:sec.catNombre,secSlug:sec.slug,secNombre:sec.nombre,num,qty:0,portaQty:0};
   carrito[key].qty+=cantidad;
-  if(porta===true) carrito[key].porta=true;
+  if(portaQty>0) carrito[key].portaQty=(carrito[key].portaQty||0)+portaQty;
   actualizarContador();
   toast("¡Agregaste al carrito!");
 }
@@ -1063,7 +1078,7 @@ function renderCarrito(){
       <div class="item">
         <img loading="lazy" decoding="async" src="${it.img || imgColor(it.catSlug,it.secSlug,it.num,'a')}" alt=""
              onerror="fallback(this,'${it.num?('#'+it.num):''}','')">
-        <div class="ti"><b>${it.secNombre}${it.num?(' #'+it.num):''}</b><small>${it.catNombre||''}</small>${it.porta?`<button class="ti-porta" onclick="togglePortaItem('${key}')">🎁 Porta chalina +$15 <span class="ti-porta-x">✕</span></button>`:''}</div>
+        <div class="ti"><b>${it.secNombre}${it.num?(' #'+it.num):''}</b><small>${it.catNombre||''}</small>${it.portaQty>0?`<button class="ti-porta" onclick="togglePortaItem('${key}')">🎁 Porta chalina x${it.portaQty} (+$15) <span class="ti-porta-x">✕</span></button>`:''}</div>
         ${it.unica ? `<span class="uno-pza">1 pza</span>` : `<div class="stepper">
           <button onclick="cambiarCarrito('${key}',-1)">−</button>
           <input type="text" inputmode="numeric" value="${it.qty}"
@@ -1102,12 +1117,12 @@ function renderEnvioAviso(){
 }
 function toggleExpress(){ envioExpress=!envioExpress; guardarCarrito(); renderCarrito(); }
 function eliminarItem(key){ delete carrito[key]; actualizarContador(); renderCarrito(); toast("¡Quitaste del carrito!"); }
-function togglePortaItem(key){ if(carrito[key]){ carrito[key].porta=false; actualizarContador(); renderCarrito(); } }
+function togglePortaItem(key){ if(carrito[key]){ carrito[key].portaQty=0; actualizarContador(); renderCarrito(); } }
 
 /* ============================ ZOOM ============================ */
 function abrirZoom(catSlug,secSlug,num){
   const sec=seccionDe(catSlug,secSlug);
-  zoomCtx={catSlug,secSlug,secNombre:sec.nombre,num,foto:0,cantidad:1,porta:false,unaFoto:!!UNA_FOTO[catSlug+"/"+secSlug]};
+  zoomCtx={catSlug,secSlug,secNombre:sec.nombre,num,foto:0,cantidad:1,portaQty:0,unaFoto:!!UNA_FOTO[catSlug+"/"+secSlug]};
   pintarZoom();
   document.getElementById("zoom-back").classList.add("abierto");
 }
@@ -1123,10 +1138,10 @@ function pintarZoom(){
   d1.style.display=z.unaFoto?"none":"";
   document.getElementById("z-d0").classList.toggle("on",z.foto===0);
   d1.classList.toggle("on",z.foto===1);
-  const bp=document.getElementById("z-porta");
-  if(bp){ bp.classList.toggle("on", z.porta); bp.textContent = z.porta ? "✓ Porta chalina añadida (+$15)" : "+$15 Añadir porta chalina"; }
+  const pc=document.getElementById("z-porta-cant"); if(pc) pc.value=z.portaQty;
 }
-function zoomTogglePorta(){ if(!zoomCtx) return; zoomCtx.porta=!zoomCtx.porta; pintarZoom(); }
+function zoomPorta(d){ if(!zoomCtx) return; zoomCtx.portaQty=Math.max(0,Math.min(9999,zoomCtx.portaQty+d)); pintarZoom(); }
+function zoomPortaFijar(v){ if(!zoomCtx) return; let x=parseInt(v,10); if(isNaN(x)||x<0)x=0; if(x>9999)x=9999; zoomCtx.portaQty=x; pintarZoom(); }
 /* Tocar la imagen del zoom alterna entre las 2 fotos (si tiene 2) */
 document.getElementById("z-img").addEventListener("click",()=>{
   if(!zoomCtx||zoomCtx.unaFoto) return; zoomCtx.foto=zoomCtx.foto===0?1:0; pintarZoom();
@@ -1144,7 +1159,7 @@ function zoomAgregar(){
   const el=document.getElementById("z-cant");
   if(el) zoomFijar(el.value);
   const sec=seccionDe(zoomCtx.catSlug,zoomCtx.secSlug);
-  agregarAlCarrito(sec,zoomCtx.num,zoomCtx.cantidad,zoomCtx.porta);
+  agregarAlCarrito(sec,zoomCtx.num,zoomCtx.cantidad,zoomCtx.portaQty);
 }
 function cerrarZoom(){ document.getElementById("zoom-back").classList.remove("abierto"); zoomCtx=null; }
 document.getElementById("zoom-back").addEventListener("click",e=>{ if(e.target.id==="zoom-back") cerrarZoom(); });
@@ -1219,11 +1234,11 @@ function construirMensaje(d){
   for(const sec in grupos){
     m+=`\n${sec}\n`;
     let subtotal=0;
-    grupos[sec].sort((a,b)=>a.num-b.num).forEach(it=>{ subtotal+=it.qty; let l = it.num ? `#${it.num}-${it.qty} piezas` : `${it.qty} piezas`; if(it.porta) l+=" + porta chalina ($15)"; if(it.catSlug==="lampara") l+=" ($200)"; m+=l+"\n"; });
+    grupos[sec].sort((a,b)=>a.num-b.num).forEach(it=>{ subtotal+=it.qty; let l = it.num ? `#${it.num}-${it.qty} piezas` : `${it.qty} piezas`; if(it.portaQty>0) l+=` + ${it.portaQty} porta chalina${it.portaQty>1?'s':''} ($15 c/u)`; if(it.catSlug==="lampara") l+=" ($200)"; m+=l+"\n"; });
     m+=`Total: ${subtotal} ${subtotal===1?'pieza':'piezas'}\n`;
   }
   m+=`\nPiezas totales: ${totalPiezas()} piezas\n`;
-  const totalPorta=Object.values(carrito).reduce((s,it)=>s+(it.porta?it.qty:0),0);
+  const totalPorta=Object.values(carrito).reduce((s,it)=>s+(it.portaQty||0),0);
   if(totalPorta>0) m+=`Porta chalinas: ${totalPorta} (+$15 c/u)\n`;
   m+= envioEsExpress()
       ? `Envío: Paquetería express${(totalPiezas()<12 && envioExpress)?" (+$150)":""}`
