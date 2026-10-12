@@ -794,6 +794,15 @@ function mostrarVista(id, keepScroll){
   cerrarMenu();
   if(!keepScroll) window.scrollTo(0,0);
 }
+/* Restaura la posición de scroll de forma confiable (reintenta por si la lista
+   aún se está acomodando o cargando imágenes) */
+function restaurarScroll(y){
+  let intentos=0;
+  const ir=()=>{ window.scrollTo(0,y); if(++intentos<8) requestAnimationFrame(ir); };
+  requestAnimationFrame(ir);
+  setTimeout(()=>window.scrollTo(0,y),120);
+  setTimeout(()=>window.scrollTo(0,y),320);
+}
 function irInicio(){ mostrarVista("inicio"); }
 function toggleMenu(){ document.getElementById("menu").classList.toggle("abierto"); }
 function cerrarMenu(){ document.getElementById("menu").classList.remove("abierto"); }
@@ -816,6 +825,7 @@ function abrirLampara(){
   const v=document.getElementById("lamp-video");
   if(v){ v.muted=true; v.currentTime=0; const p=v.play(); if(p&&p.catch) p.catch(()=>{}); }
   const b=document.getElementById("lamp-sound"); if(b) b.textContent="🔇 Toca para activar el sonido";
+  aranaBaja();
 }
 function toggleLampSound(){
   const v=document.getElementById("lamp-video"), b=document.getElementById("lamp-sound");
@@ -845,6 +855,7 @@ function abrirPedreria(){
   const v=document.getElementById("ped-video");
   if(v){ v.muted=true; const p=v.play(); if(p&&p.catch) p.catch(()=>{}); }
   const disp=piedrasDisp(); piedraIdx=disp.length?disp[0]:1; pintarPiedra();
+  aranaBaja();
 }
 function pedreriaMover(d){
   const disp=piedrasDisp(); if(!disp.length) return;
@@ -922,7 +933,7 @@ function abrirSeccion(catSlug, secSlug){
   const sec=seccionDe(catSlug, secSlug);
   seccionActual=sec;
   document.getElementById("sec-titulo").textContent=sec.nombre;
-  document.getElementById("sec-atras").onclick=()=>{ mostrarVista("categoria",true); requestAnimationFrame(()=>window.scrollTo(0,scrollCat)); };
+  document.getElementById("sec-atras").onclick=()=>{ mostrarVista("categoria",true); restaurarScroll(scrollCat); };
 
   // Carrusel: hasta 3 imágenes (las que falten se ocultan solas)
   const idxs=[1,2,3];
@@ -1334,7 +1345,7 @@ function manejarAtras(){
   const act=document.querySelector(".vista.activa");
   const id=act?act.id.replace("v-",""):"inicio";
   if(id==="seccion" && seccionActual){
-    mostrarVista("categoria",true); requestAnimationFrame(()=>window.scrollTo(0,scrollCat)); return;
+    mostrarVista("categoria",true); restaurarScroll(scrollCat); return;
   }
   if(id!=="inicio"){ irInicio(); return; }
   // 3) Ya en el inicio: se queda (no sale del catálogo)
