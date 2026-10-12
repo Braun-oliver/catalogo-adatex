@@ -106,6 +106,20 @@
     10%{opacity:1}
     100%{transform:translateY(110vh) rotate(var(--giro));opacity:1}
   }
+  /* Araña que baja en su telaraña (esquina superior derecha) */
+  #arana{position:fixed;top:0;right:26px;z-index:9997;pointer-events:none;
+         display:flex;flex-direction:column;align-items:center;
+         transform:translateY(-100%);animation:aranaBaja 4s ease-in-out forwards}
+  #arana .hilo{width:2px;height:210px;background:linear-gradient(to bottom,rgba(80,80,80,.15),rgba(80,80,80,.7))}
+  #arana .bicho{font-size:38px;line-height:1;margin-top:-4px;animation:aranaSway 1.6s ease-in-out infinite}
+  @keyframes aranaBaja{
+    0%{transform:translateY(-100%)}
+    30%{transform:translateY(0)}
+    65%{transform:translateY(-4%)}
+    78%{transform:translateY(0)}
+    100%{transform:translateY(-110%)}
+  }
+  @keyframes aranaSway{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
   .boton-op{align-self:flex-start;background:var(--panel);border:1px solid var(--borde);color:var(--texto);
             border-radius:12px;padding:.7rem 1.15rem;font-size:1rem;font-weight:700;box-shadow:var(--sombra);margin-top:.1rem}
   .boton-op:active{transform:scale(.98)}
@@ -635,7 +649,7 @@ const AGOTADOS = {
   "medallon/febrero-2026/3":true,
   "medallon/octubre-2024/1":true,"medallon/octubre-2024/14":true,
   "medallon/metalica-junio/8":true,"medallon/metalica-junio/10":true,"medallon/metalica-junio/11":true,"medallon/metalica-junio/18":true,
-  "medallon/otono/2":true,
+  "medallon/otono/2":true,"medallon/otono/3":true,
   "medallon/julio-2024/5":true,"medallon/julio-2024/13":true,"medallon/julio-2024/15":true,"medallon/julio-2024/22":true,
   "medallon/noviembre-2024/17":true,
   "medallon/agosto/2":true,"medallon/agosto/9":true,"medallon/agosto/13":true,"medallon/agosto/17":true,
@@ -661,7 +675,7 @@ const AGOTADOS = {
   "medallon/abril-2023/3":true,"medallon/abril-2023/11":true,"medallon/abril-2023/14":true,"medallon/abril-2023/18":true,"medallon/abril-2023/24":true,
   "medallon/febrero-2023/22":true,
   // VARIOS
-  "varios/centenario-1/4":true,  "varios/jael-2024/4":true,"varios/jael-2024/14":true,
+  "varios/centenario-1/4":true,  "varios/jael-2024/4":true,"varios/jael-2024/2":true,"varios/jael-2024/14":true,
   "varios/ana-2023/3":true,"varios/ana-2023/4":true,"varios/ana-2023/16":true,
   "varios/dan-2025/4":true,"varios/dan-2025/5":true,"varios/dan-2025/10":true,"varios/dan-2025/14":true,
   "varios/dan-2023/4":true,
@@ -701,6 +715,7 @@ const PEDRERIA_TOTAL = 42;               // cuántas piedras hay
 // Piedras VENDIDAS: agrega el número cuando se venda, ej: { 5:true, 12:true }
 const PEDRERIA_VENDIDAS = {
   1:true,4:true,5:true,15:true,22:true,23:true,24:true,31:true,32:true,37:true,41:true,
+  2:true,10:true,16:true,20:true,26:true,27:true,30:true,35:true,39:true,
 };
 let piedraIdx = 1;                       // piedra que se está viendo
 function piedrasDisp(){ const a=[]; for(let i=1;i<=PEDRERIA_TOTAL;i++) if(!PEDRERIA_VENDIDAS[i]) a.push(i); return a; }
@@ -890,6 +905,15 @@ function abrirCategoria(catSlug){
       </button>`;
     }).join("");
   mostrarVista("categoria");
+  aranaBaja();
+}
+/* Araña que baja en su telaraña al entrar a una categoría */
+function aranaBaja(){
+  const vieja=document.getElementById("arana"); if(vieja) vieja.remove();
+  const a=document.createElement("div"); a.id="arana";
+  a.innerHTML='<span class="hilo"></span><span class="bicho">🕷️</span>';
+  document.body.appendChild(a);
+  setTimeout(()=>{ a.remove(); }, 4100);
 }
 
 /* SECCIÓN: carrusel + grid de colores */
@@ -1272,7 +1296,7 @@ renderCarrito();
 /* Hojas de otoño cayendo ~2.5s al abrir el catálogo */
 function hojasOtono(){
   const cont=document.createElement("div"); cont.id="hojas"; document.body.appendChild(cont);
-  const hojas=["🍂","🍁","🍂","🍁","🎃"];
+  const hojas=["🍂","🍁","🍂","🍁","🎃","🕷️","🕸️"];
   function soltar(){
     const n=2+Math.floor(Math.random()*2);     // 2-3 hojas por tanda
     for(let i=0;i<n;i++){
