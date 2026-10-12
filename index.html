@@ -392,7 +392,7 @@
     <!-- CATEGORÍA (lista de secciones) -->
     <section class="vista" id="v-categoria">
       <div class="tit-pagina">
-        <button class="atras" onclick="irInicio()">←</button>
+        <button class="atras" onclick="volverInicio()">←</button>
         <h1 id="cat-titulo">CATEGORÍA</h1>
       </div>
       <div class="sec-cuadros" id="secciones-lista"></div>
@@ -412,7 +412,7 @@
     <!-- UBICACIÓN -->
     <section class="vista" id="v-ubicacion">
       <div class="tit-pagina">
-        <button class="atras" onclick="irInicio()">←</button>
+        <button class="atras" onclick="volverInicio()">←</button>
         <h1>ENCUÉNTRANOS</h1>
       </div>
       <p class="ubi-sub">¡Estaremos esperándote gustosos!</p>
@@ -434,7 +434,7 @@
     <!-- SÍGUENOS -->
     <section class="vista" id="v-siguenos">
       <div class="tit-pagina">
-        <button class="atras" onclick="irInicio()">←</button>
+        <button class="atras" onclick="volverInicio()">←</button>
         <h1>SÍGUENOS</h1>
       </div>
       <div class="redes">
@@ -447,7 +447,7 @@
     <!-- LÁMPARA CONMEMORATIVA -->
     <section class="vista" id="v-lampara">
       <div class="tit-pagina">
-        <button class="atras" onclick="irInicio()">←</button>
+        <button class="atras" onclick="volverInicio()">←</button>
         <h1>LÁMPARA CONMEMORATIVA</h1>
       </div>
       <div class="lamp-video-wrap">
@@ -474,7 +474,7 @@
     <!-- OPINIONES -->
     <section class="vista" id="v-opiniones">
       <div class="tit-pagina">
-        <button class="atras" onclick="irInicio()">←</button>
+        <button class="atras" onclick="volverInicio()">←</button>
         <h1>Opiniones</h1>
       </div>
       <p class="op-intro">¿Qué te pareció? Califícanos y déjanos tu opinión o duda. 💜</p>
@@ -486,7 +486,7 @@
     <!-- PEDRERÍA -->
     <section class="vista" id="v-pedreria">
       <div class="tit-pagina">
-        <button class="atras" onclick="irInicio()">←</button>
+        <button class="atras" onclick="volverInicio()">←</button>
         <h1>PEDRERÍA</h1>
       </div>
       <div class="ped-video">
@@ -785,7 +785,10 @@ function keyDe(catSlug, secSlug, num){ return `${catSlug}/${secSlug}/${num}`; }
 function totalPiezas(){ return Object.values(carrito).reduce((a,b)=>a+b.qty,0); }
 
 /* ============================ NAVEGACIÓN ============================ */
+let scrollInicio = 0;        // recuerda la posición en el inicio al salir a otra vista
 function mostrarVista(id, keepScroll){
+  const actual=document.querySelector(".vista.activa");
+  if(actual && actual.id==="v-inicio" && id!=="inicio") scrollInicio=window.scrollY;
   document.querySelectorAll(".vista").forEach(v=>v.classList.remove("activa"));
   document.getElementById("v-"+id).classList.add("activa");
   detenerCarrusel();
@@ -804,6 +807,8 @@ function restaurarScroll(y){
   setTimeout(()=>window.scrollTo(0,y),320);
 }
 function irInicio(){ mostrarVista("inicio"); }
+/* Regresa al inicio conservando la posición donde estaba (ej. el botón de Lámpara) */
+function volverInicio(){ mostrarVista("inicio",true); restaurarScroll(scrollInicio); }
 function toggleMenu(){ document.getElementById("menu").classList.toggle("abierto"); }
 function cerrarMenu(){ document.getElementById("menu").classList.remove("abierto"); }
 
@@ -1347,7 +1352,7 @@ function manejarAtras(){
   if(id==="seccion" && seccionActual){
     mostrarVista("categoria",true); restaurarScroll(scrollCat); return;
   }
-  if(id!=="inicio"){ irInicio(); return; }
+  if(id!=="inicio"){ volverInicio(); return; }
   // 3) Ya en el inicio: se queda (no sale del catálogo)
 }
 </script>
