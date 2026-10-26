@@ -643,7 +643,7 @@ const AGOTADOS = {
   "bordadas/media-luna/19":true,"bordadas/media-luna/20":true,
   // ---- VARIOS: números sin existencia ----
   "varios/fanny-2025/8":true,"varios/fanny-2025/29":true,
-  "varios/zareth/9":true,"varios/zareth/20":true,  "varios/ana-2023/3":true,"varios/ana-2023/4":true,"varios/ana-2023/16":true,
+  "varios/zareth/1":true,"varios/zareth/9":true,"varios/zareth/20":true,  "varios/ana-2023/3":true,"varios/ana-2023/4":true,"varios/ana-2023/16":true,
   "varios/dan-2023/4":true,"varios/dan-2025/5":true,"varios/dan-2025/10":true,
   "varios/arco/11":true,"varios/arco/14":true,
   "varios/jael-2023/5":true,"varios/jael-2023/6":true,
@@ -715,12 +715,13 @@ const SECCIONES_NUEVO = {
 };
 
 // PEDRERÍA: piezas únicas (solo hay 1 de cada una).
-const PEDRERIA_TOTAL = 44;               // cuántas piedras hay
+const PEDRERIA_TOTAL = 66;               // cuántas piedras hay
 // Piedras VENDIDAS: agrega el número cuando se venda, ej: { 5:true, 12:true }
 const PEDRERIA_VENDIDAS = {
   1:true,4:true,5:true,15:true,22:true,23:true,24:true,31:true,32:true,37:true,41:true,
   2:true,10:true,16:true,20:true,26:true,27:true,30:true,35:true,39:true,
   25:true,38:true,
+  14:true,18:true,
 };
 let piedraIdx = 1;                       // piedra que se está viendo
 function piedrasDisp(){ const a=[]; for(let i=1;i<=PEDRERIA_TOTAL;i++) if(!PEDRERIA_VENDIDAS[i]) a.push(i); return a; }
