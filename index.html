@@ -971,6 +971,7 @@ function abrirSeccion(catSlug, secSlug){
   document.getElementById("sec-titulo").textContent=sec.nombre;
   if(SEC_DESDE_INICIO[catSlug+"/"+secSlug]){
     document.getElementById("sec-atras").onclick=()=>{ mostrarVista("inicio"); };
+    aranaBaja();   // animación de bellota (esta sección no pasa por categoría)
   } else {
     document.getElementById("sec-atras").onclick=()=>{ mostrarVista("categoria",true); restaurarScroll(scrollCat); };
   }
