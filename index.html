@@ -708,19 +708,19 @@ const SECCIONES_AGOTADAS = {
   "bordadas/media-luna":true,
   "bordadas/bordada-escudo":true,
   "bordadas/bordada-arco":true,
-  "varios/economica-6":true,
-  "varios/economica-14":true,
 };
 
 // Secciones con UNA sola foto por color (sin segunda foto) y UNA sola imagen de carrusel.
 const UNA_FOTO = {
   "varios/economica-6":true,
   "varios/economica-14":true,
+  "varios/ester":true,
   "capa-nina/capa-nina":true,
 };
 // Secciones con número fijo de imágenes de carrusel (si no, hasta 3)
 const CARRUSEL_FIJO = {
   "capa-nina/capa-nina":[1],
+  "varios/ester":[1],
 };
 // Secciones que se abren directo desde el inicio (al dar "atrás" regresan al inicio)
 const SEC_DESDE_INICIO = {
@@ -730,7 +730,7 @@ const SEC_DESDE_INICIO = {
 // Secciones marcadas como "NUEVO MODELO" (listón rojo en la tarjeta).
 const SECCIONES_NUEVO = {
   "medallon/septiembre-2026":"Modelo nuevo",
-  "varios/itzel":"Modelo nuevo",
+  "varios/ester":"Modelo nuevo",
   "varios/centenario-2":"Colores nuevos",
 };
 
@@ -753,7 +753,7 @@ const CATEGORIAS = [
     ["FEBRERO 2024",15],["JUNIO 2024",25],["ABRIL 2023",24],["FEBRERO 2023",27],
   ]},
   { slug:"varios", nombre:"VARIOS", secciones:[
-    ["ITZEL",20],["BELÉN",25],["ZARETH",21],["ELISA 2026",27],["FANNY 2025",30],["JAZMÍN 2026",28],["ELEFANTE",25],
+    ["ESTER",23],["ITZEL",20],["BELÉN",25],["ZARETH",21],["ELISA 2026",27],["FANNY 2025",30],["JAZMÍN 2026",28],["ELEFANTE",25],
     ["CENTENARIO 1",10],["CENTENARIO 2",15],["JAEL 2024",15],["JAEL 2023",15],["ANA 2024",20],
     ["ANA 2023",18],["DAN 2025",14],["DAN 2023",15],["ANGEL",24],["ARPA",10],["ARCO",14],
     ["MED. ESCUDO",28],["ECONÓMICA 14",14],["ECONÓMICA 6",6],
@@ -952,16 +952,7 @@ function abrirCategoria(catSlug){
   aranaBaja();
 }
 /* Bellota con brillitos que aparece ~2s al entrar a una categoría */
-function aranaBaja(){
-  const vieja=document.getElementById("bellota"); if(vieja) vieja.remove();
-  const b=document.createElement("div"); b.id="bellota";
-  b.innerHTML='🌰'
-    +'<span class="chispa" style="top:-10px;left:-12px">✨</span>'
-    +'<span class="chispa" style="top:2px;right:-16px;animation-delay:.2s">✨</span>'
-    +'<span class="chispa" style="bottom:-12px;left:2px;animation-delay:.38s">✨</span>';
-  document.body.appendChild(b);
-  setTimeout(()=>{ b.remove(); }, 2100);
-}
+function aranaBaja(){ /* animación desactivada */ }
 
 /* SECCIÓN: carrusel + grid de colores */
 function abrirSeccion(catSlug, secSlug){
@@ -1310,10 +1301,12 @@ function construirMensaje(d){
   for(const sec in grupos){
     m+=`\n${sec}\n`;
     let subtotal=0;
-    grupos[sec].sort((a,b)=>a.num-b.num).forEach(it=>{ subtotal+=it.qty; let l = it.num ? `#${it.num}-${it.qty} piezas` : `${it.qty} piezas`; if(it.portaQty>0) l+=` + ${it.portaQty} porta chalina${it.portaQty>1?'s':''} ($15 c/u)`; if(it.catSlug==="lampara") l+=" ($200)"; m+=l+"\n"; });
+    grupos[sec].sort((a,b)=>a.num-b.num).forEach(it=>{ subtotal+=it.qty; let l = it.num ? `#${it.num}-${it.qty} piezas` : `${it.qty} piezas`; if(it.portaQty>0) l+=` + ${it.portaQty} porta chalina${it.portaQty>1?'s':''} ($15 c/u)`; if(it.catSlug==="lampara") l+=" ($200 c/u)"; m+=l+"\n"; });
     m+=`Total: ${subtotal} ${subtotal===1?'pieza':'piezas'}\n`;
   }
-  m+=`\nPiezas totales: ${totalPiezas()} piezas\n`;
+  const lampPzs=Object.values(carrito).filter(it=>it.catSlug==="lampara").reduce((s,it)=>s+it.qty,0);
+  m+=`\nPiezas totales: ${totalPiezas()-lampPzs} piezas\n`;
+  if(lampPzs>0) m+=`Piezas lámpara conmemorativa: ${lampPzs} ${lampPzs===1?'pieza':'piezas'}\n`;
   const totalPorta=Object.values(carrito).reduce((s,it)=>s+(it.portaQty||0),0);
   if(totalPorta>0) m+=`Porta chalinas: ${totalPorta} (+$15 c/u)\n`;
   m+= envioEsExpress()
@@ -1368,7 +1361,7 @@ function hojasOtono(){
   setTimeout(()=>{ clearInterval(emisor); cont.style.transition="opacity .9s"; cont.style.opacity="0"; }, 3000);
   setTimeout(()=>{ cont.remove(); }, 4000);
 }
-hojasOtono();
+/* hojasOtono() desactivado */
 /* Quitar el splash del logo cuando termina su animación (~2.6s) */
 setTimeout(()=>{ const s=document.getElementById("splash"); if(s) s.classList.add("quitar"); }, 2700);
 
@@ -1390,22 +1383,31 @@ setTimeout(()=>{ const s=document.getElementById("splash"); if(s) s.classList.ad
   document.addEventListener("visibilitychange",()=>{ if(!document.hidden) go(); });
 })();
 
-/* El botón "atrás" del celular navega DENTRO del catálogo (no saca del sitio ni borra el pedido) */
-history.pushState(null,"",location.href);
-window.addEventListener("popstate", ()=>{
-  history.pushState(null,"",location.href);  // vuelve a "atrapar" el atrás
-  manejarAtras();
-});
+/* El gesto/botón "atrás" del celular navega DENTRO del catálogo (no saca del sitio ni borra el pedido) */
+(function(){
+  function trampa(){ try{ history.pushState({adx:1},"",location.href); }catch(e){} }
+  // Varias "trampas" en el historial: así el deslizar en la esquina (iOS/Android)
+  // no alcanza a salir del catálogo aunque el gesto sea rápido.
+  trampa(); trampa(); trampa();
+  window.addEventListener("popstate", function(){
+    trampa();            // repone el historial por debajo antes de retroceder
+    manejarAtras();
+  });
+})();
 function manejarAtras(){
   // 1) Si hay algo abierto encima, ciérralo
   if(document.getElementById("cs-info-back").classList.contains("abierto")){ cerrarQueEsCS(); return; }
   if(document.getElementById("zoom-back").classList.contains("abierto")){ cerrarZoom(); return; }
   if(document.getElementById("cart-back").classList.contains("abierto")){ cerrarCarrito(); return; }
   if(document.getElementById("menu").classList.contains("abierto")){ cerrarMenu(); return; }
-  // 2) Retrocede una pantalla
+  const conf=document.getElementById("confirm");
+  if(conf && conf.classList.contains("ver")){ cancelarConfirm(); return; }
+  // 2) Retrocede una pantalla, igual que la flecha ←
   const act=document.querySelector(".vista.activa");
   const id=act?act.id.replace("v-",""):"inicio";
   if(id==="seccion" && seccionActual){
+    const k=seccionActual.catSlug+"/"+seccionActual.slug;
+    if(SEC_DESDE_INICIO[k]){ volverInicio(); return; }   // Capa Niña: regresa al inicio
     mostrarVista("categoria",true); restaurarScroll(scrollCat); return;
   }
   if(id!=="inicio"){ volverInicio(); return; }
