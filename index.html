@@ -98,6 +98,21 @@
   .cat-nuevo{position:absolute;top:10px;left:10px;background:linear-gradient(180deg,#d94b3b,#a81f12);
     color:#fff;font-size:.72rem;font-weight:800;letter-spacing:.03em;text-transform:uppercase;
     padding:.28rem .6rem;border-radius:7px;box-shadow:0 3px 8px rgba(0,0,0,.35);line-height:1}
+  /* Badge ROSA con brillos permanentes (solo en inicio, p.ej. Varios) */
+  .cat-nuevo-rosa{background:linear-gradient(180deg,#ff8fcf,#ff2e97);
+    animation:cnPulse 1.6s ease-in-out infinite}
+  @keyframes cnPulse{
+    0%,100%{box-shadow:0 0 6px rgba(255,140,205,.6),0 3px 8px rgba(255,46,151,.45)}
+    50%{box-shadow:0 0 16px rgba(255,140,205,.95),0 0 28px rgba(255,140,205,.6),0 3px 8px rgba(255,46,151,.45)}
+  }
+  .cat-nuevo-rosa::before,.cat-nuevo-rosa::after{content:"✨";position:absolute;font-size:.72rem;
+    pointer-events:none;animation:cnTwinkle 1.4s ease-in-out infinite}
+  .cat-nuevo-rosa::before{top:-9px;right:-7px}
+  .cat-nuevo-rosa::after{bottom:-9px;left:-5px;animation-delay:.7s}
+  @keyframes cnTwinkle{
+    0%,100%{opacity:.25;transform:scale(.7) rotate(0)}
+    50%{opacity:1;transform:scale(1.15) rotate(18deg)}
+  }
   /* Hojas de otoño al abrir */
   /* Splash: logo al abrir */
   #splash{position:fixed;inset:0;z-index:100000;background:#faf7ec;display:flex;align-items:center;justify-content:center;
@@ -841,8 +856,16 @@ function cerrarMenu(){ document.getElementById("menu").classList.remove("abierto
 function renderInicio(){
   const catBtn=slugCat=>{
     const c=cat(slugCat); if(!c) return "";
-    const tieneNuevo=c.secciones.some(([nom])=>SECCIONES_NUEVO[c.slug+"/"+slug(nom)]);
-    return `<button class="botonote" onclick="abrirCategoria('${c.slug}')">${c.nombre}${tieneNuevo?'<span class="cat-nuevo">Modelo nuevo</span>':''}</button>`;
+    let badge="";
+    if(slugCat==="varios"){
+      // Varios: badge ROSA con brillos permanentes (solo aquí en el inicio)
+      badge='<span class="cat-nuevo cat-nuevo-rosa">Modelo nuevo</span>';
+    } else if(slugCat!=="medallon"){
+      // Medallón: sin badge en el inicio
+      const tieneNuevo=c.secciones.some(([nom])=>SECCIONES_NUEVO[c.slug+"/"+slug(nom)]);
+      if(tieneNuevo) badge='<span class="cat-nuevo">Modelo nuevo</span>';
+    }
+    return `<button class="botonote" onclick="abrirCategoria('${c.slug}')">${c.nombre}${badge}</button>`;
   };
   document.getElementById("cats-inicio").innerHTML =
       `<button class="botonote" onclick="abrirPedreria()">PEDRERÍA</button>`
