@@ -58,6 +58,19 @@
   .logo{padding:0;display:flex;align-items:center;background:none;border:none}
   .logo img{height:44px;width:auto;display:block}
   .hamb{font-size:1.5rem;line-height:1;padding:.3rem .5rem;border:1px solid var(--borde);border-radius:8px}
+  /* Enlaces rápidos en el encabezado */
+  .topnav{display:flex;align-items:center;justify-content:center;gap:1.1rem;flex:1;min-width:0}
+  .topnav .navlink{background:none;border:0;color:var(--texto);font-weight:600;
+        font-size:.82rem;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap;cursor:pointer;padding:.2rem 0}
+  .topnav .navlink:active{opacity:.55}
+  @media(max-width:460px){
+    .header{padding:.4rem .5rem;gap:.5rem}
+    .logo img{height:36px}
+    .topnav{gap:.55rem}
+    .topnav .navlink{font-size:.63rem;letter-spacing:.005em}
+    .hamb{font-size:1.25rem;padding:.25rem .38rem}
+  }
+  @media(max-width:340px){ .topnav{gap:.4rem} .topnav .navlink{font-size:.58rem} }
 
   /* Menú desplegable (Inicio/Ubicación/Carrito/Síguenos) */
   .menu{position:fixed;top:0;right:0;z-index:60;width:min(280px,80%);
@@ -400,6 +413,11 @@
   <!-- HEADER -->
   <div class="header">
     <button class="logo" onclick="irInicio()"><img src="imagenes/logo.png" alt="El Manto Adatex"></button>
+    <nav class="topnav">
+      <button class="navlink" onclick="irInicio()">INICIO</button>
+      <button class="navlink" onclick="mostrarVista('ubicacion')">UBICACIÓN LOCAL</button>
+      <button class="navlink" onclick="mostrarVista('siguenos')">SÍGUENOS</button>
+    </nav>
     <button class="hamb" onclick="toggleMenu()" aria-label="Menú">☰</button>
   </div>
 
@@ -760,6 +778,7 @@ const SECCIONES_NUEVO = {
 const PEDRERIA_TOTAL = 30;               // cuántas piedras hay
 // Piedras VENDIDAS: agrega el número cuando se venda, ej: { 5:true, 12:true }
 const PEDRERIA_VENDIDAS = {
+  6:true, 23:true,
 };
 let piedraIdx = 1;                       // piedra que se está viendo
 function piedrasDisp(){ const a=[]; for(let i=1;i<=PEDRERIA_TOTAL;i++) if(!PEDRERIA_VENDIDAS[i]) a.push(i); return a; }
