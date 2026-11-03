@@ -113,20 +113,21 @@
     10%{opacity:1}
     100%{transform:translateY(110vh) rotate(var(--giro));opacity:1}
   }
-  /* Araña que baja en su telaraña (esquina superior derecha) */
-  #arana{position:fixed;top:0;right:26px;z-index:9997;pointer-events:none;
-         display:flex;flex-direction:column;align-items:center;
-         transform:translateY(-100%);animation:aranaBaja 4s ease-in-out forwards}
-  #arana .hilo{width:2px;height:210px;background:linear-gradient(to bottom,rgba(80,80,80,.15),rgba(80,80,80,.7))}
-  #arana .bicho{font-size:38px;line-height:1;margin-top:-4px;animation:aranaSway 1.6s ease-in-out infinite}
-  @keyframes aranaBaja{
-    0%{transform:translateY(-100%)}
-    30%{transform:translateY(0)}
-    65%{transform:translateY(-4%)}
-    78%{transform:translateY(0)}
-    100%{transform:translateY(-110%)}
+  /* Bellota con brillitos (esquina superior derecha) ~2s */
+  #bellota{position:fixed;top:16px;right:22px;z-index:9997;pointer-events:none;
+           font-size:44px;line-height:1;opacity:0;animation:bellotaPop 2s ease forwards}
+  #bellota .chispa{position:absolute;font-size:20px;opacity:0;animation:chispea 2s ease forwards}
+  @keyframes bellotaPop{
+    0%{opacity:0;transform:scale(.3) rotate(-12deg)}
+    20%{opacity:1;transform:scale(1.15) rotate(0)}
+    72%{opacity:1;transform:scale(1)}
+    100%{opacity:0;transform:scale(.85)}
   }
-  @keyframes aranaSway{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
+  @keyframes chispea{
+    0%{opacity:0;transform:scale(.2)}
+    30%{opacity:1;transform:scale(1)}
+    100%{opacity:0;transform:scale(.4) translateY(-16px)}
+  }
   .boton-op{grid-column:1 / -1;justify-self:start;background:var(--panel);border:1px solid var(--borde);color:var(--texto);
             border-radius:12px;padding:.7rem 1.15rem;font-size:1rem;font-weight:700;box-shadow:var(--sombra);margin-top:.1rem}
   .boton-op:active{transform:scale(.98)}
@@ -717,6 +718,14 @@ const UNA_FOTO = {
   "varios/economica-14":true,
   "capa-nina/capa-nina":true,
 };
+// Secciones con número fijo de imágenes de carrusel (si no, hasta 3)
+const CARRUSEL_FIJO = {
+  "capa-nina/capa-nina":[1,2],
+};
+// Secciones que se abren directo desde el inicio (al dar "atrás" regresan al inicio)
+const SEC_DESDE_INICIO = {
+  "capa-nina/capa-nina":true,
+};
 
 // Secciones marcadas como "NUEVO MODELO" (listón rojo en la tarjeta).
 const SECCIONES_NUEVO = {
@@ -942,13 +951,16 @@ function abrirCategoria(catSlug){
   mostrarVista("categoria");
   aranaBaja();
 }
-/* Araña que baja en su telaraña al entrar a una categoría */
+/* Bellota con brillitos que aparece ~2s al entrar a una categoría */
 function aranaBaja(){
-  const vieja=document.getElementById("arana"); if(vieja) vieja.remove();
-  const a=document.createElement("div"); a.id="arana";
-  a.innerHTML='<span class="hilo"></span><span class="bicho">🕷️</span>';
-  document.body.appendChild(a);
-  setTimeout(()=>{ a.remove(); }, 4100);
+  const vieja=document.getElementById("bellota"); if(vieja) vieja.remove();
+  const b=document.createElement("div"); b.id="bellota";
+  b.innerHTML='🌰'
+    +'<span class="chispa" style="top:-10px;left:-12px">✨</span>'
+    +'<span class="chispa" style="top:2px;right:-16px;animation-delay:.2s">✨</span>'
+    +'<span class="chispa" style="bottom:-12px;left:2px;animation-delay:.38s">✨</span>';
+  document.body.appendChild(b);
+  setTimeout(()=>{ b.remove(); }, 2100);
 }
 
 /* SECCIÓN: carrusel + grid de colores */
@@ -957,10 +969,14 @@ function abrirSeccion(catSlug, secSlug){
   const sec=seccionDe(catSlug, secSlug);
   seccionActual=sec;
   document.getElementById("sec-titulo").textContent=sec.nombre;
-  document.getElementById("sec-atras").onclick=()=>{ mostrarVista("categoria",true); restaurarScroll(scrollCat); };
+  if(SEC_DESDE_INICIO[catSlug+"/"+secSlug]){
+    document.getElementById("sec-atras").onclick=()=>{ mostrarVista("inicio"); };
+  } else {
+    document.getElementById("sec-atras").onclick=()=>{ mostrarVista("categoria",true); restaurarScroll(scrollCat); };
+  }
 
-  // Carrusel: hasta 3 imágenes (las que falten se ocultan solas)
-  const idxs=[1,2,3];
+  // Carrusel: número fijo para las de CARRUSEL_FIJO; si no, hasta 3 (las que falten se ocultan)
+  const idxs=CARRUSEL_FIJO[catSlug+"/"+secSlug]||[1,2,3];
   const car=document.getElementById("carrusel");
   car.innerHTML=idxs.map((i,idx)=>
     `<div class="slide ${idx===0?'on':''}" data-ci="${idx}"><img src="${imgCarrusel(catSlug,secSlug,i)}"
@@ -1331,7 +1347,7 @@ renderCarrito();
 /* Hojas de otoño cayendo ~2.5s al abrir el catálogo */
 function hojasOtono(){
   const cont=document.createElement("div"); cont.id="hojas"; document.body.appendChild(cont);
-  const hojas=["🍂","🍁","🍂","🍁","🎃","🕷️","🕸️"];
+  const hojas=["🍂","🍁","🍂","🍁","🎃","🍂","🍁","🎃"];
   function soltar(){
     const n=2+Math.floor(Math.random()*2);     // 2-3 hojas por tanda
     for(let i=0;i<n;i++){
