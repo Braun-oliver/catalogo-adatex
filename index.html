@@ -186,6 +186,13 @@
     background:linear-gradient(180deg,#d94b3b,#a81f12);color:#fff;font-weight:800;font-size:1.25rem;
     letter-spacing:.04em;text-transform:uppercase;padding:.65rem 1.05rem;border-radius:9px;
     text-align:center;max-width:90%;line-height:1.15;box-shadow:0 5px 14px rgba(0,0,0,.45)}
+  /* Listón ROSA con brillos (ej. Ester), igual que el de Varios */
+  .nuevo-badge-rosa{background:linear-gradient(180deg,#ff8fcf,#ff2e97);
+    animation:cnPulse 1.6s ease-in-out infinite}
+  .nuevo-badge-rosa::before,.nuevo-badge-rosa::after{content:"✨";position:absolute;font-size:1.1rem;
+    pointer-events:none;animation:cnTwinkle 1.4s ease-in-out infinite}
+  .nuevo-badge-rosa::before{top:-12px;right:-10px}
+  .nuevo-badge-rosa::after{bottom:-12px;left:-8px;animation-delay:.7s}
   .sec-cuadro.sec-agotada img{filter:grayscale(1) brightness(.82)}
   .sec-cuadro.sec-agotada{cursor:default}
   .sec-cuadro.sec-agotada:active{transform:none}
@@ -968,7 +975,7 @@ function abrirCategoria(catSlug){
         ${sAgot?'':`<img loading="lazy" decoding="async" src="${imgCover(c.slug,s)}" alt="${nombre}" onerror="fallback(this,'${nombre}','')">`}
         <span class="ov"></span><span class="nm">${nombre}</span>
         ${sAgot?'<span class="sec-agot-tag">Agotado</span>':''}
-        ${(sNuevo&&!sAgot)?'<span class="nuevo-badge">'+sNuevo+'</span>':''}
+        ${(sNuevo&&!sAgot)?'<span class="nuevo-badge'+((c.slug==="varios"&&s==="ester")?' nuevo-badge-rosa':'')+'">'+sNuevo+'</span>':''}
       </button>`;
     }).join("");
   mostrarVista("categoria");
