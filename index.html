@@ -756,6 +756,10 @@ const UNA_FOTO = {
   "varios/economica-14":true,
   "capa-nina/capa-nina":true,
 };
+// Colores sueltos con UNA sola foto (dentro de secciones que normalmente tienen 2). Clave = "cat/sec/num".
+const UNA_FOTO_COLOR = {
+  "varios/centenario-2/5":true,
+};
 // Secciones con número fijo de imágenes de carrusel (si no, hasta 3)
 const CARRUSEL_FIJO = {
   "capa-nina/capa-nina":[1],
@@ -1037,7 +1041,7 @@ function abrirSeccion(catSlug, secSlug){
 function tarjetaColor(sec,num){
   const key=keyDe(sec.catSlug,sec.slug,num);
   const agotado=!!AGOTADOS[key] || !!SECCIONES_AGOTADAS[sec.catSlug+"/"+sec.slug];
-  const unaFoto=!!UNA_FOTO[sec.catSlug+"/"+sec.slug];
+  const unaFoto=!!UNA_FOTO[sec.catSlug+"/"+sec.slug] || !!UNA_FOTO_COLOR[sec.catSlug+"/"+sec.slug+"/"+num];
   const src=imgColor(sec.catSlug,sec.slug,num,"a");
   const cant=cantTarjeta[key]||1;
   return `<article class="tarjeta ${agotado?'agotado':''}">
@@ -1237,7 +1241,7 @@ function togglePortaItem(key){ if(carrito[key]){ carrito[key].portaQty=0; actual
 /* ============================ ZOOM ============================ */
 function abrirZoom(catSlug,secSlug,num){
   const sec=seccionDe(catSlug,secSlug);
-  zoomCtx={catSlug,secSlug,secNombre:sec.nombre,num,foto:0,cantidad:1,portaQty:0,unaFoto:!!UNA_FOTO[catSlug+"/"+secSlug]};
+  zoomCtx={catSlug,secSlug,secNombre:sec.nombre,num,foto:0,cantidad:1,portaQty:0,unaFoto:(!!UNA_FOTO[catSlug+"/"+secSlug] || !!UNA_FOTO_COLOR[catSlug+"/"+secSlug+"/"+num])};
   pintarZoom();
   document.getElementById("zoom-back").classList.add("abierto");
 }
