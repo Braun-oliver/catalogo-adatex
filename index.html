@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Catálogo Adatex — Base funcional</title>
 
 <!-- ==========================================================================
@@ -1011,7 +1014,7 @@ function pintarPiedra(){
 let _preCache=[];
 function preloadPiedras(){
   const disp=piedrasDisp(); const pos=disp.indexOf(piedraIdx); if(pos<0) return;
-  const nums=[pos+1,pos+2,pos+3,pos-1].map(i=>disp[(i+disp.length)%disp.length]).filter(v=>v);
+  const nums=[pos+1,pos+2,pos+3,pos+4,pos-1,pos-2].map(i=>disp[(i+disp.length)%disp.length]).filter(v=>v);
   _preCache=nums.map(n=>{ const im=new Image(); im.src=`imagenes/pedreria/${n}.jpg`; return im; });
 }
 function agregarPiedra(){
@@ -1486,6 +1489,26 @@ function nieve(){
 nieve();
 // Cuando termina de llenarse, se fija: al regresar al inicio ya no vuelve a escurrir.
 setTimeout(()=>{ document.body.classList.add("nieve-fija"); }, 8000);
+
+/* ====== Auto-actualización: si subes una versión nueva, el catálogo se refresca solo ====== */
+let _verCat=null;
+async function _revisarVersion(){
+  try{
+    const r=await fetch(location.pathname+"?_v="+Date.now(), {method:"HEAD", cache:"no-store"});
+    const t=r.headers.get("etag")||r.headers.get("last-modified"); if(!t) return;
+    if(_verCat===null){ _verCat=t; return; }
+    if(t!==_verCat){
+      // No interrumpir si hay algo abierto (carrito, zoom, menú, confirmación)
+      const ocupado=document.querySelector(".abierto")||
+        (document.getElementById("confirm")&&document.getElementById("confirm").classList.contains("ver"));
+      if(ocupado) return;         // se reintenta en el próximo ciclo
+      location.reload();
+    }
+  }catch(e){}
+}
+setInterval(_revisarVersion, 150000);  // revisa cada 2.5 min
+document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) _revisarVersion(); });
+_revisarVersion();
 /* Quitar el splash del logo cuando termina su animación (~2.6s) */
 setTimeout(()=>{ const s=document.getElementById("splash"); if(s) s.classList.add("quitar"); }, 2700);
 
