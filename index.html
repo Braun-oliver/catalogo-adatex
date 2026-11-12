@@ -298,10 +298,10 @@
                text-transform:uppercase;letter-spacing:.06em;padding:.55rem}
 
   /* ---------- UBICACIÓN ---------- */
-  .ubi-sub{text-align:center;color:var(--suave);margin-bottom:1rem}
+  .ubi-sub{text-align:center;color:#ffffff;margin-bottom:1rem}
   .mapa{width:100%;aspect-ratio:4/3;border:0;border-radius:12px;background:#d7d7d7;box-shadow:var(--sombra)}
-  .ubi-datos{margin:1rem 0;font-size:1.05rem;line-height:1.7}
-  .ubi-link{display:inline-block;margin-top:.4rem;color:var(--teal2);font-weight:700}
+  .ubi-datos{margin:1rem 0;font-size:1.05rem;line-height:1.7;color:#ffffff}
+  .ubi-link{display:inline-block;margin-top:.4rem;color:#f0d49a;font-weight:700;text-decoration:underline}
 
   /* ---------- SÍGUENOS ---------- */
   .redes{display:flex;flex-direction:column;gap:1rem;margin:1.4rem 0}
@@ -513,7 +513,10 @@
       <div class="ubi-datos">
         <strong>CONTAMOS CON LOCAL EN:</strong><br>
         Calle: Belen 3442, Guadalajara, Jalisco<br>
-        Horarios: 10 am a 2 pm<br>
+        <strong>HORARIOS:</strong><br>
+        LUNES A VIERNES 10:30am-12pm y 2:00pm-7pm<br>
+        SÁBADOS: 10:30am-3pm<br>
+        DOMINGOS: 1pm-3pm<br>
         A un lado de la entrada del huerto
       </div>
       <a class="ubi-link" target="_blank" rel="noopener"
@@ -819,7 +822,7 @@ const SECCIONES_NUEVO = {
 };
 
 // PEDRERÍA: piezas únicas (solo hay 1 de cada una).
-const PEDRERIA_TOTAL = 30;               // cuántas piedras hay
+const PEDRERIA_TOTAL = 63;               // cuántas piedras hay
 // Piedras VENDIDAS: agrega el número cuando se venda, ej: { 5:true, 12:true }
 const PEDRERIA_VENDIDAS = {
   6:true, 7:true, 8:true, 9:true, 19:true, 22:true, 23:true,
