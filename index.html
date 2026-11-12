@@ -1465,26 +1465,31 @@ function hojasOtono(){
 function nieve(){
   const cont=document.createElement("div"); cont.id="hojas"; document.body.appendChild(cont);
   const copos=["❄","❅","❆","•","*","❄"];
-  function soltar(){
-    const n=2+Math.floor(Math.random()*3);
-    for(let i=0;i<n;i++){
+  function soltar(cuantos){
+    for(let i=0;i<cuantos;i++){
       const s=document.createElement("span");
       s.textContent=copos[Math.floor(Math.random()*copos.length)];
-      const dur=3+Math.random()*2.6;
+      const dur=4+Math.random()*4;                 // caen lento
       s.style.left=(Math.random()*100)+"vw";
-      s.style.fontSize=(12+Math.random()*20)+"px";
+      s.style.fontSize=(10+Math.random()*13)+"px";
       s.style.color="#ffffff";
       s.style.textShadow="0 0 5px rgba(150,180,220,.85)";
       s.style.setProperty("--giro",(Math.random()*360-180)+"deg");
       s.style.animationDuration=dur+"s";
       cont.appendChild(s);
-      setTimeout(()=>{ if(s)s.remove(); }, dur*1000+300);
+      setTimeout(()=>{ if(s)s.remove(); }, dur*1000+500);
     }
   }
-  soltar();
-  const emisor=setInterval(soltar,210);
-  setTimeout(()=>{ clearInterval(emisor); cont.style.transition="opacity 1.5s"; cont.style.opacity="0"; }, 6000);
-  setTimeout(()=>{ cont.remove(); }, 8200);
+  // Intro: unos segundos con más copos (para que se llene la nieve de los botones)
+  soltar(3);
+  const intro=setInterval(()=>soltar(2), 230);
+  setTimeout(()=>clearInterval(intro), 5000);
+  // Después: poquitos copos esporádicos, para siempre (sutil, no fastidia)
+  function esporadico(){
+    soltar(1);
+    setTimeout(esporadico, 1600+Math.random()*2800);   // 1 copo cada ~1.6 a 4.4 s
+  }
+  setTimeout(esporadico, 5300);
 }
 nieve();
 // Cuando termina de llenarse, se fija: al regresar al inicio ya no vuelve a escurrir.
