@@ -175,6 +175,7 @@
   @keyframes splashOut{to{opacity:0;visibility:hidden}}
   #splash.quitar{display:none}
   #hojas{position:fixed;inset:0;z-index:9999;pointer-events:none;overflow:hidden}
+  body.sin-nieve #hojas{display:none}
   #hojas span{position:absolute;top:-10%;will-change:transform,opacity;animation:caer linear forwards}
   @keyframes caer{
     0%{transform:translateY(-10vh) rotate(0deg);opacity:0}
@@ -1220,9 +1221,9 @@ function abrirCarrito(){
   cerrarMenu();
   document.getElementById("confirm").classList.remove("ver");
   renderCarrito();
-  document.getElementById("cart-back").classList.add("abierto");
+  document.getElementById("cart-back").classList.add("abierto"); document.body.classList.add("sin-nieve");
 }
-function cerrarCarrito(){ document.getElementById("cart-back").classList.remove("abierto"); }
+function cerrarCarrito(){ document.getElementById("cart-back").classList.remove("abierto"); document.body.classList.remove("sin-nieve"); }
 
 function renderCarrito(){
   const cont=document.getElementById("cart-items");
