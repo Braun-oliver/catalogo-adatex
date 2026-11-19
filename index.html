@@ -668,6 +668,11 @@
         <div class="campo"><label>Teléfono</label><input id="f-tel" type="text" inputmode="numeric" maxlength="15"></div>
         <div class="campo"><label>Referencia</label><input id="f-ref" type="text"></div>
       </div>
+      <div class="p-sub" style="margin-top:.9rem">¿TU ENVÍO ES AL EXTRANJERO? Llena la siguiente información:</div>
+      <div class="form-datos">
+        <div class="campo"><label>Correo electrónico de quien recibe</label><input id="f-correo" type="email"></div>
+        <div class="campo"><label>Número de cédula</label><input id="f-cedula" type="text"></div>
+      </div>
       <p class="nota-horario">🕙 Si envías tu pedido antes de las 10 am se enviará hoy; después de las 10 am, mañana.</p>
       <p class="aviso-form" id="aviso-form">Completa todos los datos para poder enviar tu pedido.</p>
 
@@ -720,7 +725,6 @@ const WHATSAPP = "524441768388";   // Número del NEGOCIO. Solo para los enlaces
    Ejemplo (descomenta y ajusta cuando me digas cuáles):
    const AGOTADOS = { "medallon/febrero-2026/3": true, "varios/zareth/10": true };  */
 const AGOTADOS = {
-  "capa-nina/capa-nina/5":true,
   "capa-nina/capa-nina/10":true,
   "capa-nina/capa-nina/12":true,
   // ---- BORDADAS: números sin existencia (no llegaron sus fotos) ----
@@ -741,7 +745,13 @@ const AGOTADOS = {
   "bordadas/media-luna/19":true,"bordadas/media-luna/20":true,
   // ---- VARIOS: números sin existencia ----
   "bordadas/milhojas/37":true,
-  "varios/fanny-2025/8":true,
+  // ---- ACTUALIZACIÓN 19 nov ----
+  "varios/fanny-2025/2":true,
+  "medallon/julio-2024/25":true,
+  "medallon/febrero-2023/1":true,
+  "medallon/abril-2023/4":true,
+  "bordadas/milhojas/4":true,"bordadas/milhojas/10":true,
+  "varios/zareth/2":true,"varios/zareth/19":true,
   "varios/zareth/1":true,"varios/zareth/9":true,"varios/zareth/20":true,  "varios/ana-2023/3":true,"varios/ana-2023/4":true,"varios/ana-2023/16":true,
   "varios/dan-2023/4":true,"varios/dan-2025/5":true,"varios/dan-2025/10":true,
   "varios/arco/11":true,"varios/arco/14":true,
@@ -1351,6 +1361,8 @@ function leerDatos(){
     cp:document.getElementById("f-cp").value.trim(),
     tel:document.getElementById("f-tel").value.trim(),
     ref:document.getElementById("f-ref").value.trim(),
+    correo:document.getElementById("f-correo").value.trim(),
+    cedula:document.getElementById("f-cedula").value.trim(),
   };
 }
 function validar(d){
@@ -1388,7 +1400,8 @@ function construirMensaje(d){
   const ahora=new Date();
   const fecha=ahora.toLocaleDateString("es-MX");
   const hora=ahora.toLocaleTimeString("es-MX",{hour:"2-digit",minute:"2-digit"});
-  let m=`PEDIDO: ${fecha} ${hora}\n\n`;
+  const extranjero = !!(d.correo || d.cedula);
+  let m=`PEDIDO ${extranjero?"EXTRANJERO":"NACIONAL"}: ${fecha} ${hora}\n\n`;
   m+=`Nombre de quien recibe: ${d.nombre}\n`;
   m+=`Calle y número: ${d.calle}\n`;
   m+=`Colonia: ${d.colonia}\n`;
@@ -1396,6 +1409,10 @@ function construirMensaje(d){
   m+=`Código postal: ${d.cp}\n`;
   m+=`Teléfono: ${d.tel}\n`;
   m+=`Referencia: ${d.ref}\n`;
+  if(extranjero){
+    if(d.correo) m+=`Correo electrónico: ${d.correo}\n`;
+    if(d.cedula) m+=`Número de cédula: ${d.cedula}\n`;
+  }
   // Agrupar por sección, con total por modelo
   const grupos={};
   Object.values(carrito).forEach(it=>{ (grupos[it.secNombre] ||= []).push(it); });
@@ -1424,7 +1441,7 @@ function confirmarEnviar(){
   window.open(`https://api.whatsapp.com/send?text=${texto}`,"_blank");
   // Limpiar y mostrar éxito
   carrito={}; envioExpress=false;
-  ["f-nombre","f-calle","f-colonia","f-estado","f-cp","f-tel","f-ref"].forEach(id=>document.getElementById(id).value="");
+  ["f-nombre","f-calle","f-colonia","f-estado","f-cp","f-tel","f-ref","f-correo","f-cedula"].forEach(id=>document.getElementById(id).value="");
   actualizarContador();
   cerrarCarrito();
   document.getElementById("confirm").classList.remove("ver");
