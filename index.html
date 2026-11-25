@@ -746,7 +746,9 @@ const AGOTADOS = {
   // ---- VARIOS: números sin existencia ----
   "bordadas/milhojas/37":true,
   // ---- ACTUALIZACIÓN 19 nov ----
-  "varios/fanny-2025/2":true,
+  // ---- ACTUALIZACIÓN 23 nov ----
+  "bordadas/milhojas/9":true,
+  "medallon/metalica-junio/7":true,"medallon/metalica-junio/12":true,
   "medallon/julio-2024/25":true,
   "medallon/febrero-2023/1":true,
   "medallon/abril-2023/4":true,
@@ -861,7 +863,7 @@ const CATEGORIAS = [
     ["MED. ESCUDO",28],["ECONÓMICA 14",14],["ECONÓMICA 6",6],
   ]},
   { slug:"bordadas", nombre:"BORDADAS", secciones:[
-    ["MILHOJAS",38],["BORDADA ARCO",20],["BORDADA ESCUDO",15],["MEDIA LUNA",20],["BORDADA (M5)",20],
+    ["MILHOJAS",38],["BORDADA (M5)",20],["BORDADA ARCO",20],["BORDADA ESCUDO",15],["MEDIA LUNA",20],
   ]},
   { slug:"capa-nina", nombre:"CAPA NIÑA", secciones:[
     ["CAPA NIÑA",14],
@@ -1400,7 +1402,7 @@ function construirMensaje(d){
   const ahora=new Date();
   const fecha=ahora.toLocaleDateString("es-MX");
   const hora=ahora.toLocaleTimeString("es-MX",{hour:"2-digit",minute:"2-digit"});
-  const extranjero = !!(d.correo || d.cedula);
+  const extranjero = !!d.cedula;
   let m=`PEDIDO ${extranjero?"EXTRANJERO":"NACIONAL"}: ${fecha} ${hora}\n\n`;
   m+=`Nombre de quien recibe: ${d.nombre}\n`;
   m+=`Calle y número: ${d.calle}\n`;
@@ -1409,10 +1411,8 @@ function construirMensaje(d){
   m+=`Código postal: ${d.cp}\n`;
   m+=`Teléfono: ${d.tel}\n`;
   m+=`Referencia: ${d.ref}\n`;
-  if(extranjero){
-    if(d.correo) m+=`Correo electrónico: ${d.correo}\n`;
-    if(d.cedula) m+=`Número de cédula: ${d.cedula}\n`;
-  }
+  if(d.correo) m+=`Correo electrónico: ${d.correo}\n`;
+  if(d.cedula) m+=`Número de cédula: ${d.cedula}\n`;
   // Agrupar por sección, con total por modelo
   const grupos={};
   Object.values(carrito).forEach(it=>{ (grupos[it.secNombre] ||= []).push(it); });
