@@ -355,6 +355,14 @@
   .zoom .z-top button{font-size:1.15rem;font-weight:700;letter-spacing:.04em;padding:.4rem .6rem;color:var(--suave)}
   .zoom .z-img{position:relative;aspect-ratio:1/1;background:#eee}
   .zoom .z-img img{width:100%;height:100%;object-fit:contain}
+  .zoom .z-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:3;
+    width:42px;height:42px;border-radius:50%;border:none;cursor:pointer;
+    background:rgba(255,255,255,.85);color:#162415;font-size:1.7rem;font-weight:700;
+    line-height:1;display:flex;align-items:center;justify-content:center;
+    padding:0 0 .18em 0;box-shadow:0 2px 8px rgba(0,0,0,.28)}
+  .zoom .z-nav:active{background:#fff}
+  .zoom .z-prev{left:8px}
+  .zoom .z-next{right:8px}
   .zoom .z-num{text-align:center;font-weight:700;padding:.5rem;font-size:1.1rem}
   .zoom .z-dots{display:flex;gap:.4rem;justify-content:center;padding-bottom:.4rem}
   .zoom .z-dots span{width:8px;height:8px;border-radius:50%;background:var(--gris2)}
@@ -625,7 +633,10 @@
 <div class="zoom-back" id="zoom-back">
   <div class="zoom">
     <div class="z-top"><button onclick="cerrarZoom()">✕ ATRÁS</button></div>
-    <div class="z-img"><img id="z-img" alt=""></div>
+    <div class="z-img"><img id="z-img" alt="">
+      <button class="z-nav z-prev" id="z-prev" onclick="zoomFoto(-1)" aria-label="Foto anterior">‹</button>
+      <button class="z-nav z-next" id="z-next" onclick="zoomFoto(1)" aria-label="Siguiente foto">›</button>
+    </div>
     <div class="z-num" id="z-num">NÚMERO</div>
     <div class="z-dots"><span class="on" id="z-d0"></span><span id="z-d1"></span></div>
     <div class="z-foot">
@@ -1321,6 +1332,14 @@ function pintarZoom(){
   document.getElementById("z-d0").classList.toggle("on",z.foto===0);
   d1.classList.toggle("on",z.foto===1);
   const pc=document.getElementById("z-porta-cant"); if(pc) pc.value=z.portaQty;
+  const nav=z.unaFoto?"none":"flex";
+  document.getElementById("z-prev").style.display=nav;
+  document.getElementById("z-next").style.display=nav;
+}
+/* Flechitas del visor: cambian entre las 2 fotos */
+function zoomFoto(dir){
+  if(!zoomCtx||zoomCtx.unaFoto) return;
+  zoomCtx.foto=zoomCtx.foto===0?1:0; pintarZoom();
 }
 function zoomPorta(d){ if(!zoomCtx) return; zoomCtx.portaQty=Math.max(0,Math.min(9999,zoomCtx.portaQty+d)); pintarZoom(); }
 function zoomPortaFijar(v){ if(!zoomCtx) return; let x=parseInt(v,10); if(isNaN(x)||x<0)x=0; if(x>9999)x=9999; zoomCtx.portaQty=x; pintarZoom(); }
